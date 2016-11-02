@@ -16,13 +16,12 @@ diamond.matrix <- function(x){
   return(matrix)
 } 
 
-diamond.matrix(x=5)
+a <- diamond.matrix(x=5)
 
 square.matrix <- function(x){
-  matrix <- diamond.matrix(x)
   matrix[ceiling(.5*nrow(matrix)),1] <- mean(c(matrix[1,1], matrix[nrow(matrix),1],  matrix[ceiling(.5*(nrow(matrix))), ceiling(.5*(ncol(matrix)))]))
   matrix[ceiling(.5*nrow(matrix)), ceiling(.5*ncol(matrix))] <- mean(c(matrix[1, ceiling(.5*ncol(matrix))],  matrix[nrow(matrix), nrow(matrix)],  matrix[ceiling(.5*(nrow(matrix))), ceiling(.5*(ncol(matrix)))]))
   return(matrix)
 }
 
-square.matrix(x=5)
+square.matrix(a)
