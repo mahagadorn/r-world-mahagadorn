@@ -25,6 +25,10 @@ survive <- c(SpAsur, SpBsur, SpCsur)
 
 #here is the function that will set up our plants
 
+comp.mat <- matrix(NA, nrow = length(repro), ncol=length(repro))
+
+
+
 setup.plants <- function(repro, survive, comp.mat, names=NULL){
   if (is.null(names))
     names <- letters[seq_along(repro)]
