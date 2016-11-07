@@ -14,6 +14,8 @@ general.matrix <- function(n){
   g.mat[nrow(g.mat), 1] <- rnorm(1, 500, 500)
   g.mat[1, ncol(g.mat)] <- rnorm(1, 500, 500)
   g.mat[nrow(g.mat), nrow(g.mat)] <- rnorm(1, 500, 500)
+  corner.vec <- c(g.mat[1,1], g.mat[1, ncol(g.mat)],  g.mat[1, ncol(g.mat)], g.mat[nrow(g.mat), nrow(g.mat)])    #give me the values of the corners
+  g.mat[ceiling(.5*(nrow(g.mat))), ceiling(.5*(ncol(g.mat)))] <- mean(corner.vec)     #taking the mean of the corner and placing it in the center of the matrix
   return(g.mat)
 }
 
@@ -22,8 +24,6 @@ g.mat <- general.matrix(4)
 
 #diamond.step function
 diamond.step <- function(g.mat){
-  corner.vec <- c(g.mat[1,1], g.mat[1, ncol(g.mat)],  g.mat[1, ncol(g.mat)], g.mat[nrow(g.mat), nrow(g.mat)])    #give me the values of the corners
-  g.mat[ceiling(.5*(nrow(g.mat))), ceiling(.5*(ncol(g.mat)))] <- mean(corner.vec)     #taking the mean of the corner and placing it in the center of the matrix
   #now we need to add in to make the mini boxes
   #Start with the top left
   g.mat[ceiling(.5*nrow(g.mat)), 1] <- rnorm(1, 250, 100) #bottom left corner of top left mini-square
@@ -46,31 +46,16 @@ diamond.step <- function(g.mat){
   return(g.mat)
 } 
 
-g.mat <- diamond.step(g.mat)
+ds.g.mat <- diamond.step(g.mat)
 
 
 
 
-#first thing we need to do is to make the diamond.matrix function
-
-diamond.step <- function(g.mat){
-  matrix <- g.mat
-  corner.vec <- c(matrix[1,1],  matrix[1, ncol(matrix)],  matrix[1, ncol(matrix)], matrix[nrow(matrix), nrow(matrix)])
-  matrix[ceiling(.5*(nrow(matrix))), ceiling(.5*(ncol(matrix)))] <- mean(corner.vec)
-  return(matrix)
-} 
-
-diamond.matrix(g.mat)
-
-
-
-
-
-square.step <- function(x){
-  matrix <- matrix(NA, nrow = ((2*x)+1), ncol = ((2*x)+1))
-  matrix[ceiling(.5*nrow(matrix)),1] <- mean(c(matrix[1,1], matrix[nrow(matrix),1],  matrix[ceiling(.5*(nrow(matrix))), ceiling(.5*(ncol(matrix)))]))
-  matrix[ceiling(.5*nrow(matrix)), ceiling(.5*ncol(matrix))] <- mean(c(matrix[1, ceiling(.5*ncol(matrix))],  matrix[nrow(matrix), nrow(matrix)],  matrix[ceiling(.5*(nrow(matrix))), ceiling(.5*(ncol(matrix)))]))
-  return(matrix)
+#now we need to make our square matrix
+square.step <- function(g.mat){
+  g.mat[ceiling(.5*nrow(g.mat)),1] <- mean(c(g.mat[1,1], g.mat[nrow(g.mat),1],  g.mat[ceiling(.5*(nrow(g.mat))), ceiling(.5*(ncol(g.mat)))]))
+  # g.mat[ceiling(.5*nrow(g.mat)), ceiling(.5*ncol(g.mat))] <- mean(c(g.mat[1, ceiling(.5*ncol(g.mat))], g.mat[nrow(g.mat), nrow(g.mat)],  g.mat[ceiling(.5*(nrow(g.mat))), ceiling(.5*(ncol(g.mat)))]]
+  return(g.mat)
 }
 
-square.matrix(4)
+square.step(g.mat)
