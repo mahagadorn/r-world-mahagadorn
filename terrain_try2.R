@@ -67,10 +67,19 @@ g.mat<- diamond.square.step(g.mat)
 #now using the diamond.square.step we want to fill in the rest of the tiny squares
 
 
+###Upper Left
 
+up.left <- diamond.square.step(g.mat[1:(ceiling(.5*(nrow(g.mat)))), 1:ceiling(.5*(ncol(g.mat)))])
+up.right <- diamond.square.step(g.mat[1:(ceiling(.5*(nrow(g.mat)))), ceiling(.5*(ncol(g.mat))):ncol(g.mat)])
+#bind them together #####need to figure out how to not add an extra column in here
+top.mat <- cbind(up.left, up.right)
 
+bot.left <- diamond.square.step(g.mat[ceiling(.5*(nrow(g.mat))):nrow(g.mat), 1:ceiling(.5*(ncol(g.mat)))])
+bot.right <- diamond.square.step(g.mat[ceiling(.5*(nrow(g.mat))):nrow(g.mat), ceiling(.5*(ncol(g.mat))):ncol(g.mat)])
+#Bind them together
+bot.mat <- cbind(bot.left, bot.right)
 
-
+big.matrix <- rbind(top.mat, bot.mat)
 
 
 
