@@ -53,7 +53,12 @@ setup.plants(repro, survive, setup.plants, names)
 #Survival function
 #this determines whether a particular species will survive
 survive <- function(cell, info){
-  for
+  if(cell(is.na))
+    return("This cell is water, no competition")
+  if (cell=='')
+    return("Nothing in this cell!")
+  if(runif(1) <= info$survive[plant])   #your value is greater than or equal to your survival probability then you win yay!
+    return("The plant survived! Please proceed!")
 }
 
 
