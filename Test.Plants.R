@@ -1,3 +1,23 @@
+Test.Terrain <- matrix(NA, nrow=5, ncol=5)
+
+
+Test.Terrain[1,] <- round(rnorm(5), digits = 3)
+Test.Terrain[2,] <- round(rnorm(5, 3, 1), digits = 3)
+Test.Terrain[3,] <- round(rnorm(5, 2, 1), digits = 3)
+Test.Terrain[4,] <- round(rnorm(5, 1, .25), digits = 3)
+Test.Terrain[5,] <- round(rnorm(5, 1, 1), digits = 3)
+
+#Lets add in som NA's so that we can test the NA aspect of our functions
+
+Test.Terrain[4,3] <- NA
+Test.Terrain[3,3] <- NA
+
+
+####################################################################################
+####################################################################################
+####################################################################################
+#Here is where I am going to test thing out
+
 ##MAHagadorn
 ##R-World
 ##Plants
@@ -5,7 +25,7 @@
 
 #The first thing that we need to do is write a defensive function
 #this function will check a variety of things to ensure that all the input information is right
-    ##basically we are checking to make sure the user isn't putting in any information that is wrong
+##basically we are checking to make sure the user isn't putting in any information that is wrong
 
 
 #need to create our input vectors
@@ -13,9 +33,11 @@
 
 #probability of reproduction for 3 different species
 repro <- c(.50, 1, .75)
+repro
 
 #survival vector containing probability of survival for 3 different species
 survive <- c(.75, .50, .50)
+survive
 
 #here is our competition matrix
 comp.mat <- matrix(NA, nrow = length(repro), ncol=length(repro))
@@ -25,11 +47,20 @@ comp.mat[3,] <- c(.75, .25, .90)
 comp.mat
 
 #names of our plant species
-names <- c("A", "B", "C")
+names <- c("Medicago sativa", "Lolium perenne", "Trifolium repens")
+names
 
+#Here we are going to be using the Test.Terrain that I made in a seperate script (Test.Terrain.R)
+#This will ensure that our functions are working properly
+Test.Terrain
+# [,1]  [,2]  [,3]   [,4]   [,5]
+# [1,]  0.520 0.374 0.951  0.955  1.526
+# [2,]  4.056 4.908 3.293  2.732  4.758
+# [3,] -0.187 3.506    NA  2.269  2.224
+# [4,]  1.011 0.761    NA  0.816  1.141
+# [5,] -0.545 0.523 1.368 -0.343 -0.012
 
-
-
+#####   ATTENTION: MAH REMOVE THIS BIT OF INFO WHEN YOU ARE CLEANING THINGS UP!!!!!!
 
 
 
@@ -50,12 +81,20 @@ setup.plants <- function(repro, survive, comp.mat, names=NULL){
 }
 
 info <- setup.plants(repro, survive, setup.plants, names)
+print(info)
+
 
 #just testing to make sure that the added names section works out.
 # test.name<-c("A", "B")
 # setup.plants(repro, survive, setup.plants, test.name)
 
 #First Steps: storing plants and keeping them alive!!
+
+
+
+
+
+
 
 #Survival function
 #this determines whether a particular species will survive
@@ -116,31 +155,53 @@ plant.timestep <- function(plants, info){
 #'we have already written our plant.timestep function in the previous step
 #'The plant.timestep function was written as if the user had already generated their terrain matrix (which is what we did in lesson one of r-world)
 #'But here, we still have to seed our initial plant matrix with their starting plants
-    #' We also need to get some plant parameter inforation from our user
+#' We also need to get some plant parameter inforation from our user
 
 #' information about our plants NEEDS to be stored as an array
 #' An array is like a matrix (row,col) EXCEPT we want to add in an additional depth (here it is TIME)
 #' This third demension will record how are plants are changing through time
-      #' first load of plants plants[,,1] 
-      #' second load of plants plants[,,2] 
-          #' SEE HOW WE ARE SPECIFYING WHICH DEPTH! THIS IS HOW THEY ARE CHANGING OVER TIME: 1 INITIAL, 2 AFTER TIME INTERVAL???
+#' first load of plants plants[,,1] 
+#' second load of plants plants[,,2] 
+#' SEE HOW WE ARE SPECIFYING WHICH DEPTH! THIS IS HOW THEY ARE CHANGING OVER TIME: 1 INITIAL, 2 AFTER TIME INTERVAL???
 #' Something we need to do here is randomly add the number of individuals that the user wants into the matrix at RANDOM
-    #'Then go in to the matrix AFTERWARDS and make NA plants that happened to land on water
-    #'To do this make sure you keep track of where the water is in your matrix
-    #'This is where we want to reference our terrain to make the NA adjustments, NOT LATER! 
+#'Then go in to the matrix AFTERWARDS and make NA plants that happened to land on water
+#'To do this make sure you keep track of where the water is in your matrix
+#'This is where we want to reference our terrain to make the NA adjustments, NOT LATER! 
 
 
 #making the plants array
 #notice the timesteps+1
-    #'Why did we do this this way?
-    #'This is what should make it move through time???  plus one means it will add to the time step before
-    #'
+#'Why did we do this this way?
+#'This is what should make it move through time???  plus one means it will add to the time step before
+#'
 
 plants <- array("", dim=c(dim(terrain), plant.timestep + 1))
-  for(i in seq_len(dim(plants)[3]))
-    #seq_len(y) or in our case (seq_len(dim(plants)) is creating a sequence up dimensions of plants array
-      plants[,,i][is.na(terrain)] <- NA
-      #will fill in any NA's in terrain, into the third dimension (time here) with NA's
+for(i in seq_len(dim(plants)[3]))
+  #seq_len(y) or in our case (seq_len(dim(plants)) is creating a sequence up dimensions of plants array
+  plants[,,i][is.na(terrain)] <- NA
+#will fill in any NA's in terrain, into the third dimension (time here) with NA's
+
+#lets see if we can generate some plants!!
+#Tester sections!!!! comment out afterwards
+plants <- array("", dim=c(dim(Test.Terrain), plant.timestep + 1))
+for(i in seq_len(dim(plants)[3]))
+  #seq_len(y) or in our case (seq_len(dim(plants)) is creating a sequence up dimensions of plants array
+  plants[,,i][is.na(terrain)] <- NA
+
+####Working through Error message
+# Error in plant.timestep + 1 : non-numeric argument to binary operator
+# > for(i in seq_len(dim(plants)[3]))
+#   +   #seq_len(y) or in our case (seq_len(dim(plants)) is creating a sequence up dimensions of plants array
+#   +   plants[,,i][is.na(terrain)] <- NA
+# Error in seq_len(dim(plants)[3]) : 
+#   argument must be coercible to non-negative integer
+# In addition: Warning message:
+#   In seq_len(dim(plants)[3]) : first element used of 'length.out' argument
+
+#printing
+print(plants)
+
+
 
 
 
@@ -152,14 +213,14 @@ plants <- array("", dim=c(dim(terrain), plant.timestep + 1))
 #' within this function we want to add a call for the plant.timestep function
 #' 
 #' first line should look something like this 
-      #'     plant <- reproduce(row, col, plants, info)
-      #' plants is key here.  this is the matrix that we generated that includes the depth of time
-      #' so the ENTIRE plant matrix has to be passed
-      #'
-      #' Notice, we also have the info argument here
-      #' "info" was generated in the setup.plants function
-      #' this argument contains information such as probability of reproduction and survival, as well as the competition matrix (or probablity of success when faced with competition)
-      
+#'     plant <- reproduce(row, col, plants, info)
+#' plants is key here.  this is the matrix that we generated that includes the depth of time
+#' so the ENTIRE plant matrix has to be passed
+#'
+#' Notice, we also have the info argument here
+#' "info" was generated in the setup.plants function
+#' this argument contains information such as probability of reproduction and survival, as well as the competition matrix (or probablity of success when faced with competition)
+
 #'What do we want out of this function????
 #'we want to call the inputs described above
 #'we also want to define where they can and can't reproduce--> specifically that they can't reproduce in water
@@ -171,9 +232,9 @@ plants <- array("", dim=c(dim(terrain), plant.timestep + 1))
 reproduce <- function(row, col, plants.matrix, info){
   possible.locations <- as.matrix(expand.grid(row+c(-1,0,1), col+c(-1,0,1)))
   #filter out NOT water logged locations and then we want to reproduce here
- filt.posloc<-filter(possible.locations, row!=NA & col!=NA) #wont work
- filt.posloc<-filter(plants.matrix, is.numeric(plants.matrix)) #can filter by is.number
- 
+  filt.posloc<-filter(possible.locations, row!=NA & col!=NA) #wont work
+  filt.posloc<-filter(plants.matrix, is.numeric(plants.matrix)) #can filter by is.number
+  
 }
 
 
