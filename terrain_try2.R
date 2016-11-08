@@ -67,6 +67,20 @@ g.mat<- diamond.square.step(g.mat)
 #now using the diamond.square.step we want to fill in the rest of the tiny squares
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 ###Upper Left
 
 up.left <- diamond.square.step(g.mat[1:(ceiling(.5*(nrow(g.mat)))), 1:ceiling(.5*(ncol(g.mat)))])

@@ -81,7 +81,7 @@ survive <- function(cell, info){
 #plant.timestep function
 
 #I have no clue if this is even reasonably close to what we are supposed to be doing....AHHHHHHHH
-plant.timestep <- function(plants, terrain, info){
+plant.timestep <- function(plants, info){
   #define survivor function
   survive <- function(plant, info){
     if(is.na(plant))     #if it isnt a species I want you to return what is already in the contents of the cell
@@ -95,7 +95,7 @@ plant.timestep <- function(plants, terrain, info){
   }
   #looping through the plant matrix
   for(i in plants){
-    for(j in terrain)
+    for(j in plants)
       new.plant.matrix <- survive(plants[i,j], info)
     return(new.plant.matrix)
   }
