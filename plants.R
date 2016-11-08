@@ -165,7 +165,9 @@ plants <- array("", dim=c(dim(terrain), plant.timestep + 1))
 reproduce <- function(row, col, plants.matrix, info){
   possible.locations <- as.matrix(expand.grid(row+c(-1,0,1), col+c(-1,0,1)))
   #filter out NOT water logged locations and then we want to reproduce here
-  
+ filt.posloc<-filter(possible.locations, row!=NA & col!=NA) #wont work
+ filt.posloc<-filter(plants.matrix, is.numeric(plants.matrix)) #can filter by is.number
+ 
 }
 
 
