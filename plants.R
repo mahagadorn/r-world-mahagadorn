@@ -37,12 +37,13 @@ setup.plants <- function(repro, survive, comp.mat, names=NULL){
   if (length(names) != length(repro))
     stop("The number of names doesn't match reproduction and survival parameters")
   repro <- setNames(repro, names)
+  survive <- setNames(survive, names)
   #set.Names is a convenience function that sets the names on an object and returns the object
   #set.Names() is the most useful at the end of a function definition where one is creating the object to be returned
   return(list(repro=repro, survive=survive, comp.mat=comp.mat, names=names))
 }
 
-setup.plants(repro, survive, setup.plants, names)
+info <- setup.plants(repro, survive, setup.plants, names)
 
 #just testing to make sure that the added names section works out.
 # test.name<-c("A", "B")
@@ -53,16 +54,59 @@ setup.plants(repro, survive, setup.plants, names)
 #Survival function
 #this determines whether a particular species will survive
 survive <- function(cell, info){
-  if(cell(is.na))
-    return("This cell is water, no competition")
+  if(is.na(cell))     #if it isnt a species I want you to return what is already in the contents of the cell
+    return(NA)
   if (cell=='')
-    return("Nothing in this cell!")
+    return('')
   if(runif(1) <= info$survive[plant])   #your value is greater than or equal to your survival probability then you win yay!
-    return("The plant survived! Please proceed!")
+    return(cell)
+  if(runif(1) >= info$survive[plant])   #if the random number is greater that our survival probablity the return a blank space
+    return('')    #this makes sense because if it dies it's no longer there...there is nothing in this cell
+}
+
+
+#pseudo code for what to feed into this function:
+#matrix.name[row,col] <- survive(matrix[row,col], info).....this will ultimately be looped over!!!
+
+
+#now we need a function that makes time "tick" by for an entire matrix of plants
+#this function should have an input that is our plant matrix
+#we want to loop over the plant matrix
+#then we want to apply the survivor function to all of the contents
+
+#what we want is a loop for the plant matrix and then a loop for the survivor matrix
+
+
+
+#plant.timestep function
+
+#I have no clue if this is even reasonably close to what we are supposed to be doing....AHHHHHHHH
+plant.timestep <- function(plants, terrain, info){
+  #define survivor function
+  survive <- function(plant, info){
+    if(is.na(plant))     #if it isnt a species I want you to return what is already in the contents of the cell
+      return(NA)
+    if (plant=='')
+      return('')
+    if(runif(1) <= info$survive[plant])   #your value is greater than or equal to your survival probability then you win yay!
+      return(plant)
+    if(runif(1) >= info$survive[plant])   #if the random number is greater that our survival probablity the return a blank space
+      return('')    #this makes sense because if it dies it's no longer there...there is nothing in this cell
+  }
+  #looping through the plant matrix
+  for(i in plants){
+    for(j in terrain)
+      new.plant.matrix <- survive(plants[i,j], info)
+    return(new.plant.matrix)
+  }
 }
 
 
 
+#6.2.3 run.plant.ecosystem---Here is where we actually make our plant array that we input into the previously generated functions
+#info was generated withthe setup.plants
+
+#what do we want here???
 
 
 
