@@ -107,6 +107,66 @@ plant.timestep <- function(plants, terrain, info){
 #info was generated withthe setup.plants
 
 #what do we want here???
+#'we have already written our plant.timestep function in the previous step
+#'The plant.timestep function was written as if the user had already generated their terrain matrix (which is what we did in lesson one of r-world)
+#'But here, we still have to seed our initial plant matrix with their starting plants
+    #' We also need to get some plant parameter inforation from our user
+
+#' information about our plants NEEDS to be stored as an array
+#' An array is like a matrix (row,col) EXCEPT we want to add in an additional depth (here it is TIME)
+#' This third demension will record how are plants are changing through time
+      #' first load of plants plants[,,1] 
+      #' second load of plants plants[,,2] 
+          #' SEE HOW WE ARE SPECIFYING WHICH DEPTH! THIS IS HOW THEY ARE CHANGING OVER TIME: 1 INITIAL, 2 AFTER TIME INTERVAL???
+#' Something we need to do here is randomly add the number of individuals that the user wants into the matrix at RANDOM
+    #'Then go in to the matrix AFTERWARDS and make NA plants that happened to land on water
+    #'To do this make sure you keep track of where the water is in your matrix
+    #'This is where we want to reference our terrain to make the NA adjustments, NOT LATER! 
+
+
+#making the plants array
+#notice the timesteps+1
+    #'Why did we do this this way?
+    #'This is what should make it move through time???  plus one means it will add to the time step before
+    #'
+
+plants <- array("", dim=c(dim(terrain), plant.timestep + 1))
+  for(i in seq_len(dim(plants)[3]))
+    #seq_len(y) or in our case (seq_len(dim(plants)) is creating a sequence up dimensions of plants array
+      plants[,,i][is.na(terrain)] <- NA
+      #will fill in any NA's in terrain, into the third dimension (time here) with NA's
+
+
+
+#REPRODUCTION
+#' our plants keep dying out....because we havent told them to reproduce yet
+#' we need them to reproduce like the would in nature (we have already included their reproduction probs in the info section)
+#' 
+#' We need to write a function that is called "reproduce"
+#' within this function we want to add a call for the plant.timestep function
+#' 
+#' first line should look something like this 
+      #'     plant <- reproduce(row, col, plants, info)
+      #' plants is key here.  this is the matrix that we generated that includes the depth of time
+      #' so the ENTIRE plant matrix has to be passed
+      #'
+      #' Notice, we also have the info argument here
+      #' "info" was generated in the setup.plants function
+      #' this argument contains information such as probability of reproduction and survival, as well as the competition matrix (or probablity of success when faced with competition)
+      
+#'What do we want out of this function????
+#'we want to call the inputs described above
+#'we also want to define where they can and can't reproduce--> specifically that they can't reproduce in water
+#'we also want to flter out which ones are NOT water logged and then we want to reproduce there
+#'we need to CHECK that we actually have a place for them to reproduce to
+#'finally we want to return plants matrix 
+
+#reproduce function
+reproduce <- function(row, col, plants.matrix, info){
+  possible.locations <- as.matrix(expand.grid(row+c(-1,0,1), col+c(-1,0,1)))
+  #filter out NOT water logged locations and then we want to reproduce here
+  
+}
 
 
 
@@ -115,3 +175,13 @@ plant.timestep <- function(plants, terrain, info){
 
 
 
+
+
+
+
+
+
+
+
+
+plant <- reproduce(row, col, plants, info)
