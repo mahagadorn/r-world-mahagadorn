@@ -106,15 +106,15 @@ survive <- function(cell, info){
 #I have no clue if this is even reasonably close to what we are supposed to be doing....AHHHHHHHH
 plant.timestep <- function(plants, info){
   #define survivor function
-  survive <- function(plant, info){
-    if(is.na(plant))     #if it isnt a species I want you to return what is already in the contents of the cell
+  survive <- function(cell, info){
+    if(is.na(cell))     #if it isnt a species I want you to return what is already in the contents of the cell
       return(NA)
-    if (plant=='')
+    if (cell=='')
       return('')
     if(runif(1) <= info$survive[plant])   #your value is greater than or equal to your survival probability then you win yay!
-      return(plant)
+      return(cell)
     if(runif(1) >= info$survive[plant])   #if the random number is greater that our survival probablity the return a blank space
-      return('')    #this makes sense because if it dies it's no longer there...there is nothing in this cell
+      return('')  #this makes sense because if it dies it's no longer there...there is nothing in this cell
   }
   #looping through the plant matrix
   for(i in plants){
@@ -153,11 +153,38 @@ plant.timestep <- function(plants, info){
     #'This is what should make it move through time???  plus one means it will add to the time step before
     #'
 
+
 plants <- array("", dim=c(dim(terrain), num.timesteps + 1))
   for(i in seq_len(dim(plants)[3]))
     #seq_len(y) or in our case (seq_len(dim(plants)) is creating a sequence up dimensions of plants array
       plants[,,i][is.na(terrain)] <- NA
       #will fill in any NA's in terrain, into the third dimension (time here) with NA's
+
+
+
+#Now we need to build this into a function
+#This will be the run.plant.ecosystem
+
+#######working up until i get to looping through the plant.timestep
+
+run.plant.ecosystem <- function(terrain, num.timesteps, info){
+  terrain <- terrain
+  info <- info
+  #Make the array
+  plants <- array("", dim=c(dim(terrain), num.timesteps + 1))
+  for(i in seq_len(dim(plants)[3]))
+    #seq_len(y) or in our case (seq_len(dim(plants)) is creating a sequence up dimensions of plants array
+    plants[,,i][is.na(terrain)] <- NA
+  for(i in plants){
+    for(j in plants){
+      for(k in plants){
+        plants[,,,k] <- plant.timestep(plants, info)
+      }
+    }
+  }
+}
+
+run.plant.ecosystem(Test.Terrain, 2, info)
 
 
 
