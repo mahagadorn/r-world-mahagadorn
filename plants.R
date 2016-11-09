@@ -188,9 +188,17 @@ plants <- array("", dim=c(dim(terrain), plant.timestep + 1))
 reproduce <- function(row, col, plants.matrix, info){
   possible.locations <- as.matrix(expand.grid(row+c(-1,0,1), col+c(-1,0,1)))
   #filter out NOT water logged locations and then we want to reproduce here
- filt.posloc<-filter(plants.matrix, !is.na(plants.matrix)) #can filter by is.number
- 
+  for(i in possible.locations){
+    for(j in possible.locations){
+      if(!is.na(possible.locations[i,j]))         #filtering out those that arent NA
+        if(runif(1) <= info$survive[plant]) 
+          plants[i,j] <- info$names[plant]   #I have no clue what to put in here?????
+    }      
+  }   
 }
+
+#I have no clue if it is working
+
 
 
 

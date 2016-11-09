@@ -21,3 +21,63 @@
 
 
 #HERBIVORE STORAGE=MATRIX FORMAT
+
+#probability that our herbivore will reproduce
+repro <- .50
+
+#survival vector containing probability of survival for 3 different species
+kill <- .25
+
+
+
+#let's set up the movement aspect to our herbivore
+###### THIS IS GOING TO BE SIMILAR TO THE DISPERSAL (REPRO) FUNCTION IN OUR PLANTS. ONCES YOU GET THAT WORKING IMPLEMENT HERE.
+
+
+
+new.loc <- function(row, col, herbivore){
+  possible.locations <- as.matrix(expand.grid(row+c(-1,0,1), col+c(-1,0,1)))
+  #filter out NOT water logged locations and then we want to reproduce here
+  for(i in possible.locations){
+    for(j in possible.locations){
+      if(!is.na(possible.locations[i,j]))         #filtering out those that arent NA
+        if(runif(1) <= info$survive[plant]) 
+          plants[i,j] <- info$names[plant]   #I have no clue what to put in here?????
+    }      
+  }   
+}
+
+#Eating section
+#' Eating is based on the time to death
+#' DEATH IS ZERO
+
+
+
+
+
+
+
+
+
+
+
+
+#Herbivore setup.herbivore!!!!!
+
+setup.herbivores <- function(eat, kill, repro){
+  if(!is.numeric(eat) | !is.numeric(kill) | !is.numeric(repro))
+      stop("Herbivores need numeric data")
+  if(length(kill) != 1)
+      stop("Herbivores need one kill probability")
+  if(length(repro) != 1)
+      stop("Herbivores need one reproduction probability")
+  sated <- length(eat)
+  return(list(eat=eat, kill=kill, repro=repro, sated=sated))
+}
+
+
+
+
+
+
+
