@@ -183,6 +183,10 @@ for(i in seq_len(dim(plants)[3]))
 
 #lets see if we can generate some plants!!
 #Tester sections!!!! comment out afterwards
+run.plant.ecosystem <- function(terrain, #????????)
+                                
+                                
+#how we make the plants array                                
 plants <- array("", dim=c(dim(Test.Terrain), plant.timestep + 1))
 for(i in seq_len(dim(plants)[3]))
   #seq_len(y) or in our case (seq_len(dim(plants)) is creating a sequence up dimensions of plants array
@@ -190,6 +194,7 @@ for(i in seq_len(dim(plants)[3]))
 
 ####Working through Error message
 # Error in plant.timestep + 1 : non-numeric argument to binary operator
+###MAH comment: this is saying that there is an issue with my binaary operator "+" because the plant.timestep isnt numeric
 # > for(i in seq_len(dim(plants)[3]))
 #   +   #seq_len(y) or in our case (seq_len(dim(plants)) is creating a sequence up dimensions of plants array
 #   +   plants[,,i][is.na(terrain)] <- NA
