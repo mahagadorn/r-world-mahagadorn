@@ -7,7 +7,7 @@
 #first thing that we need to do is to make a general matrix.
 #matrix is called the g.mat, so we are saving these in specific places.
 general.matrix <- function(n){
-  mat.size <- ((2*n)+1)
+  mat.size <- ((2^n)+1)
   g.mat <- matrix(NA, nrow = mat.size, ncol = mat.size)
   #here we are adding values to the corners
   g.mat[1,1] <- rnorm(1, 500, 500)
@@ -17,7 +17,7 @@ general.matrix <- function(n){
   return(g.mat)
 }
 
-g.mat <- general.matrix(4) 
+g.mat <- general.matrix(3) 
 
 
 #Diamond step matrix
@@ -65,6 +65,30 @@ g.mat<- diamond.square.step(g.mat)
 
 
 #now using the diamond.square.step we want to fill in the rest of the tiny squares
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

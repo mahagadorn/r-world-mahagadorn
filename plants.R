@@ -28,8 +28,17 @@ comp.mat
 names <- c("A", "B", "C")
 
 
+#Here we are going to be using the Test.Terrain that I made in a seperate script (Test.Terrain.R)
+#This will ensure that our functions are working properly
+Test.Terrain
+# [,1]  [,2]  [,3]   [,4]   [,5]
+# [1,]  0.520 0.374 0.951  0.955  1.526
+# [2,]  4.056 4.908 3.293  2.732  4.758
+# [3,] -0.187 3.506    NA  2.269  2.224
+# [4,]  1.011 0.761    NA  0.816  1.141
+# [5,] -0.545 0.523 1.368 -0.343 -0.012
 
-
+#####   ATTENTION: MAH REMOVE THIS BIT OF INFO WHEN YOU ARE CLEANING THINGS UP!!!!!!
 
 
 
@@ -50,12 +59,20 @@ setup.plants <- function(repro, survive, comp.mat, names=NULL){
 }
 
 info <- setup.plants(repro, survive, setup.plants, names)
+print(info)
+
 
 #just testing to make sure that the added names section works out.
 # test.name<-c("A", "B")
 # setup.plants(repro, survive, setup.plants, test.name)
 
 #First Steps: storing plants and keeping them alive!!
+
+
+
+
+
+
 
 #Survival function
 #this determines whether a particular species will survive
@@ -171,8 +188,7 @@ plants <- array("", dim=c(dim(terrain), plant.timestep + 1))
 reproduce <- function(row, col, plants.matrix, info){
   possible.locations <- as.matrix(expand.grid(row+c(-1,0,1), col+c(-1,0,1)))
   #filter out NOT water logged locations and then we want to reproduce here
- filt.posloc<-filter(possible.locations, row!=NA & col!=NA) #wont work
- filt.posloc<-filter(plants.matrix, is.numeric(plants.matrix)) #can filter by is.number
+ filt.posloc<-filter(plants.matrix, !is.na(plants.matrix)) #can filter by is.number
  
 }
 

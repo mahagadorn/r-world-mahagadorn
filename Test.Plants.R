@@ -175,11 +175,16 @@ plant.timestep <- function(plants, info){
 #'This is what should make it move through time???  plus one means it will add to the time step before
 #'
 
+
+run.plant.ecosystem <- function(terrain, #????????){
 plants <- array("", dim=c(dim(terrain), plant.timestep + 1))
 for(i in seq_len(dim(plants)[3]))
   #seq_len(y) or in our case (seq_len(dim(plants)) is creating a sequence up dimensions of plants array
   plants[,,i][is.na(terrain)] <- NA
 #will fill in any NA's in terrain, into the third dimension (time here) with NA's
+
+
+}
 
 #lets see if we can generate some plants!!
 #Tester sections!!!! comment out afterwards
@@ -234,19 +239,19 @@ print(plants)
 #'finally we want to return plants matrix 
 
 #reproduce function
-reproduce <- function(row, col, plants.matrix, info){
+reproduce <- function(row, col, plants, info){
   possible.locations <- as.matrix(expand.grid(row+c(-1,0,1), col+c(-1,0,1)))
   #filter out NOT water logged locations and then we want to reproduce here
-  filt.posloc<-filter(possible.locations, row!=NA & col!=NA) #wont work
-  filt.posloc<-filter(plants.matrix, is.numeric(plants.matrix)) #can filter by is.number
+  filt.plants<-filter(plants.matrix, !is.na(plants)) #can filter by is.number
+    if(possible.locations=='')
+      
   
 }
 
 
+filt.test <- filter(Test.Terrain, !is.na(Test.Terrain))
 
-
-
-
+filt.test <- subset(Test.Terrain, !is.na(Test.Terrain[,]))
 
 
 
