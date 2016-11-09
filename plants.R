@@ -153,7 +153,7 @@ plant.timestep <- function(plants, info){
     #'This is what should make it move through time???  plus one means it will add to the time step before
     #'
 
-plants <- array("", dim=c(dim(terrain), plant.timestep + 1))
+plants <- array("", dim=c(dim(terrain), num.timesteps + 1))
   for(i in seq_len(dim(plants)[3]))
     #seq_len(y) or in our case (seq_len(dim(plants)) is creating a sequence up dimensions of plants array
       plants[,,i][is.na(terrain)] <- NA
