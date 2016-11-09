@@ -119,7 +119,8 @@ plant.timestep <- function(plants, info){
   #looping through the plant matrix
   for(i in plants){
     for(j in plants)
-      new.plant.matrix <- survive(plants[i,j], info)
+      for(k in plants)
+      new.plant.matrix <- survive(plants[i,j,k], info)
     return(new.plant.matrix)
   }
 }
@@ -178,7 +179,7 @@ run.plant.ecosystem <- function(terrain, num.timesteps, info){
   for(i in plants){
     for(j in plants){
       for(k in plants){
-        plants[,,,k] <- plant.timestep(plants, info)
+        plants[i,j,k] <- plant.timestep(plants, info)
       }
     }
   }
