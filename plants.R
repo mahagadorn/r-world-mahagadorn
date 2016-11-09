@@ -177,9 +177,12 @@ run.plant.ecosystem <- function(terrain, num.timesteps, info){
     #seq_len(y) or in our case (seq_len(dim(plants)) is creating a sequence up dimensions of plants array
     plants[,,i][is.na(terrain)] <- NA
   for(i in plants){
+    print(i)
     for(j in plants){
+      print(j)
       for(k in plants){
-        plants[i,j,k] <- plant.timestep(plants, info)
+        print(k)
+        plants[i,j,k] <- plant.timestep(plants[,,k], info)
       }
     }
   }
