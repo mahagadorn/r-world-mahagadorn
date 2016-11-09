@@ -41,8 +41,8 @@ new.loc <- function(row, col, herbivore){
   for(i in possible.locations){
     for(j in possible.locations){
       if(!is.na(possible.locations[i,j]))         #filtering out those that arent NA
-        if(runif(1) <= info$survive[plant]) 
-          plants[i,j] <- info$names[plant]   #I have no clue what to put in here?????
+        if(runif(1) <= ???[herbivore]) 
+          herbivore[i,j] <- ????[herbivore]   #########THIS IS NOT RIGHT!!!!!!!!
     }      
   }   
 }
@@ -51,8 +51,15 @@ new.loc <- function(row, col, herbivore){
 #' Eating is based on the time to death
 #' DEATH IS ZERO
 
+#Sated = 5 @ five they are good to go....they have fie more time steps until they die
+eat <- c(.1, .3, .5, .7, .9)   #probability of eating
 
-
+eat.fun <- function(herbivore, sated){
+  eat <- c(.1, .3, .5, .7, .9)
+  sated <- sated
+    prob.ind <- eat[herbivore[row,col]]
+}
+  eat <- c(.1, .3, .5, .7, .9)
 
 
 
