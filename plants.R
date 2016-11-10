@@ -25,7 +25,7 @@ comp.mat[3,] <- c(.75, .25, .90)
 comp.mat
 
 #names of our plant species
-names <- c("A", "B", "C")
+name <- c("A", "B", "C")
 
 
 #Here we are going to be using the Test.Terrain that I made in a seperate script (Test.Terrain.R)
@@ -44,21 +44,21 @@ Test.Terrain
 
 
 #here is the function that will set up our plants
-setup.plants <- function(repro, survive, comp.mat, names=NULL){
-  if (is.null(names))
-    names <- letters[seq_along(repro)]
+setup.plants <- function(repro, survive, comp.mat, name=NULL){
+  if (is.null(name))
+    name <- letters[seq_along(repro)]
   if (length(repro) !=length(survive))
     stop("Reproduction and survival parameters needed for all species!")
-  if (length(names) != length(repro))
+  if (length(name) != length(repro))
     stop("The number of names doesn't match reproduction and survival parameters")
-  repro <- setNames(repro, names)
-  survive <- setNames(survive, names)
+  repro <- setNames(repro, name)
+  survive <- setNames(survive, name)
   #set.Names is a convenience function that sets the names on an object and returns the object
   #set.Names() is the most useful at the end of a function definition where one is creating the object to be returned
-  return(list(repro=repro, survive=survive, comp.mat=comp.mat, names=names))
+  return(list(repro=repro, survive=survive, comp.mat=comp.mat, name=name))
 }
 
-info <- setup.plants(repro, survive, setup.plants, names)
+info <- setup.plants(repro, survive, setup.plants, name)
 print(info)
 
 
@@ -106,25 +106,24 @@ survive <- function(cell, info){
 #I have no clue if this is even reasonably close to what we are supposed to be doing....AHHHHHHHH
 plant.timestep <- function(plants, info){
   #define survivor function
-  survive <- function(cell, info){
-    if(is.na(cell))     #if it isnt a species I want you to return what is already in the contents of the cell
+  survive <- function(plant, info){
+    if(is.na(plant))     #if it isnt a species I want you to return what is already in the contents of the cell
       return(NA)
-    if (cell=='')
+    if (plant=='')
       return('')
-    if(runif(1) <= info$survive[plant])   #your value is greater than or equal to your survival probability then you win yay!
-      return(cell)
-    if(runif(1) >= info$survive[plant])   #if the random number is greater that our survival probablity the return a blank space
-      return('')  #this makes sense because if it dies it's no longer there...there is nothing in this cell
+    if(runif(1) <= info$survive[name])   #your value is greater than or equal to your survival probability then you win yay!
+      return(name)
+    if(runif(1) >= info$survive[name])   #if the random number is greater that our survival probablity the return a blank space
+      return('')    #this makes sense because if it dies it's no longer there...there is nothing in this cell
   }
   #looping through the plant matrix
-  for(i in plants){
-    for(j in plants)
-      for(k in plants)
-      new.plant.matrix <- survive(plants[i,j,k], info)
-    return(new.plant.matrix)
+  for(i in 1:nrow(plants)){
+    for(j in 1:ncol(plants)){
+      new.plant.matrix <- survive(plants[i,j], info)
+      return(new.plant.matrix)
+    }
   }
 }
-
 
 
 #6.2.3 run.plant.ecosystem---Here is where we actually make our plant array that we input into the previously generated functions
@@ -176,15 +175,9 @@ run.plant.ecosystem <- function(terrain, num.timesteps, info){
   for(i in seq_len(dim(plants)[3]))
     #seq_len(y) or in our case (seq_len(dim(plants)) is creating a sequence up dimensions of plants array
     plants[,,i][is.na(terrain)] <- NA
-  for(i in plants){
-    print(i)
-    for(j in plants){
-      print(j)
-      for(k in plants){
+      for(k in 1:dim(plants)[3]){
         print(k)
         plants[i,j,k] <- plant.timestep(plants[,,k], info)
-      }
-    }
   }
 }
 
@@ -223,7 +216,7 @@ reproduce <- function(row, col, plants.matrix, info){
     for(j in possible.locations){
       if(!is.na(possible.locations[i,j]))         #filtering out those that arent NA
         if(runif(1) <= info$survive[plant]) 
-          plants[i,j] <- info$names[plant]   #I have no clue what to put in here?????
+          plants[i,j] <- info$name[plant]   #I have no clue what to put in here?????
     }      
   }   
 }

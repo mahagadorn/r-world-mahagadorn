@@ -8,7 +8,7 @@ diamond.square.step<- function(g.mat){
   Bot.mid <- c(1, ceiling((1/4)*nrow(g.mat)), ceiling((1/2)*nrow(g.mat)), ceiling((3/4)*nrow(g.mat)), nrow(g.mat))
   mid.points <- expand.grid(Bot.mid, Top.mid) #list of all our midpoints
   for(i in 1:nrow(mid.points)){
-      g.mat[mid.points[i,]] <- diamond.step(g.mat[mid.points[i,]])
+      g.mat[mid.points[1:3,1:3]] <- diamond.step(g.mat[mid.points[i,]])
   }
   return(g.mat)
 }
