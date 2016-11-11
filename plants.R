@@ -119,7 +119,7 @@ plant.timestep <- function(plants, info){
   #looping through the plant matrix
   for(i in 1:nrow(plants)){
     print(i)
-    for(j in 1:ncol(plants)){
+    for(j in ncol(plants)){
       print(j)
       new.plant.matrix <- survive(plants[i,j], info)
       return(new.plant.matrix)
@@ -173,16 +173,19 @@ run.plant.ecosystem <- function(terrain, num.timesteps, info){
   info <- info
   #Make the array
   plants <- array("", dim=c(dim(terrain), num.timesteps + 1))
-  for(k in seq_len(dim(plants)[3]))
+  # for(i in 1:(.5*(nrow(terrain)*ncol(terrain))))
+  for(i in 1:(.5*nrow(terrain)^2)){
+    plants[sample(nrow(plants),1), sample(ncol(plants),1), 1] <- sample(info$name, 1) 
+  }
+  for(k in seq_len(dim(plants)[3])){
     #seq_len(y) or in our case (seq_len(dim(plants)) is creating a sequence up dimensions of plants array
     plants[,,k][is.na(terrain)] <- NA
-      for(k in 1:dim(plants)[3]){
-        print(i)
-        plants[i,j,k] <- plant.timestep(plants[i,j,k], info)
   }
+  plants[,,k] <- plant.timestep(plants[,,k], info)
+        return(plants)
 }
 
-run.plant.ecosystem(Test.Terrain, 2, info)
+run.plant.ecosystem(Test.Terrain, 3, info)
 
 
 
