@@ -106,26 +106,49 @@ survive <- function(cell, info){
 #I have no clue if this is even reasonably close to what we are supposed to be doing....AHHHHHHHH
 plant.timestep <- function(plants, info){
   #define survivor function
-  survive <- function(plant, info){
-    if(is.na(plant))     #if it isnt a species I want you to return what is already in the contents of the cell
+  survive <- function(cell, info){
+    if(is.na(cell))     #if it isnt a species I want you to return what is already in the contents of the cell
       return(NA)
-    if(plant=='')
+    if(cell=='')
       return('')
-    if(runif(1) <= info$survive[name])   #your value is greater than or equal to your survival probability then you win yay!
-      return(name)
-    if(runif(1) >= info$survive[name])   #if the random number is greater that our survival probablity the return a blank space
+    if(runif(1) <= info$survive[cell])   #your value is greater than or equal to your survival probability then you win yay!
+      return(cell)
+    if(runif(1) >= info$survive[cell])   #if the random number is greater that our survival probablity the return a blank space
       return('')    #this makes sense because if it dies it's no longer there...there is nothing in this cell
   }
   #looping through the plant matrix
-  for(k in 1:(nrow(plants)^2)[3]-1){
-    for(i in 1:(nrow(plants)^2)[1]){
-      for(j in 1:(nrow(plants)^2)[2]){
+  for(k in 1:(dim(plants)[3]-1)){
+    for(i in 1:dim(plants)[1]){
+      for(j in 1:dim(plants)[2]){
       plants[i,j,k] <- survive(plants[i,j,k], info)
-      return(plants)
+      print(c(i,j,k))
       }
     }
   }
+  return(plants)
 }
+
+
+plant.timestep(plants, info)
+
+
+#timestep for plant
+plant.timestep <- function(eco,info){
+  for(k in 1:(dim(eco)[3]-1)){
+    for(i in 1:dim(eco)[1]){
+      for(j in 1:dim(eco)[2]){
+        eco[i,j,k+1] <- survive(eco[i,j,k], info)
+      }
+    }
+  }
+  return(eco)
+}
+
+
+
+
+
+
 
 #6.2.3 run.plant.ecosystem---Here is where we actually make our plant array that we input into the previously generated functions
 #info was generated withthe setup.plants
@@ -177,11 +200,11 @@ run.plant.ecosystem <- function(terrain, num.timesteps, info){
   for(i in 1:(.5*nrow(terrain)^2)){
     plants[sample(nrow(plants),1), sample(ncol(plants),1), 1] <- sample(info$name, 1)
   }
-  for(k in seq_len(dim(plants)[3])){
+  for(i in seq_len(dim(plants)[3])){
     #seq_len(y) or in our case (seq_len(dim(plants)) is creating a sequence up dimensions of plants array
-    plants[,,k][is.na(terrain)] <- NA
+    plants[,,i][is.na(terrain)] <- NA
   }
-  plants[,,k] <- plant.timestep(plants[,,k], info)
+  plants[,,i] <- plant.timestep(plants, info)
         return(plants)
 }
 
