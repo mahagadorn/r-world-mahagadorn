@@ -46,12 +46,12 @@ diamond.step <- function(g.mat){
   return(g.mat)
 } 
 
-ds.g.mat <- diamond.step(g.mat)
+diamond.step(g.mat)
 
 
 
 
-#now we need to make our square matrix
+ds#now we need to make our square matrix
 square.step <- function(g.mat){
   g.mat[ceiling(.5*nrow(g.mat)),1] <- mean(c(g.mat[1,1], g.mat[nrow(g.mat),1],  g.mat[ceiling(.5*(nrow(g.mat))), ceiling(.5*(ncol(g.mat)))]))
   # g.mat[ceiling(.5*nrow(g.mat)), ceiling(.5*ncol(g.mat))] <- mean(c(g.mat[1, ceiling(.5*ncol(g.mat))], g.mat[nrow(g.mat), nrow(g.mat)],  g.mat[ceiling(.5*(nrow(g.mat))), ceiling(.5*(ncol(g.mat)))]]
@@ -59,3 +59,23 @@ square.step <- function(g.mat){
 }
 
 square.step(g.mat)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

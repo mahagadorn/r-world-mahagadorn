@@ -118,7 +118,9 @@ plant.timestep <- function(plants, info){
   }
   #looping through the plant matrix
   for(i in 1:nrow(plants)){
+    print(i)
     for(j in 1:ncol(plants)){
+      print(j)
       new.plant.matrix <- survive(plants[i,j], info)
       return(new.plant.matrix)
     }
@@ -154,11 +156,10 @@ plant.timestep <- function(plants, info){
     #'
 
 
-plants <- array("", dim=c(dim(terrain), num.timesteps + 1))
-  for(i in seq_len(dim(plants)[3]))
-    #seq_len(y) or in our case (seq_len(dim(plants)) is creating a sequence up dimensions of plants array
-      plants[,,i][is.na(terrain)] <- NA
-      #will fill in any NA's in terrain, into the third dimension (time here) with NA's
+plants <- array("", dim=c(dim(Test.Terrain), 2 + 1))
+for(i in seq_len(dim(plants)[3]))
+  #seq_len(y) or in our case (seq_len(dim(plants)) is creating a sequence up dimensions of plants array
+  plants[,,i][is.na(Test.Terrain)] <- NA
 
 
 
@@ -172,12 +173,12 @@ run.plant.ecosystem <- function(terrain, num.timesteps, info){
   info <- info
   #Make the array
   plants <- array("", dim=c(dim(terrain), num.timesteps + 1))
-  for(i in seq_len(dim(plants)[3]))
+  for(k in seq_len(dim(plants)[3]))
     #seq_len(y) or in our case (seq_len(dim(plants)) is creating a sequence up dimensions of plants array
-    plants[,,i][is.na(terrain)] <- NA
+    plants[,,k][is.na(terrain)] <- NA
       for(k in 1:dim(plants)[3]){
-        print(k)
-        plants[i,j,k] <- plant.timestep(plants[,,k], info)
+        print(i)
+        plants[i,j,k] <- plant.timestep(plants[i,j,k], info)
   }
 }
 

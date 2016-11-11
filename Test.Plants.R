@@ -46,9 +46,9 @@ comp.mat[2,] <- c(.25, .35, .85)
 comp.mat[3,] <- c(.75, .25, .90)
 comp.mat
 
-#names of our plant species
-names <- c("Medicago sativa", "Lolium perenne", "Trifolium repens")
-names
+#name of our plant species
+name <- c("Medicago sativa", "Lolium perenne", "Trifolium repens")
+name
 
 #Here we are going to be using the Test.Terrain that I made in a seperate script (Test.Terrain.R)
 #This will ensure that our functions are working properly
@@ -66,25 +66,25 @@ Test.Terrain
 
 
 #here is the function that will set up our plants
-setup.plants <- function(repro, survive, comp.mat, names=NULL){
-  if (is.null(names))
-    names <- letters[seq_along(repro)]
+setup.plants <- function(repro, survive, comp.mat, name=NULL){
+  if (is.null(name))
+    name <- letters[seq_along(repro)]
   if (length(repro) !=length(survive))
     stop("Reproduction and survival parameters needed for all species!")
-  if (length(names) != length(repro))
-    stop("The number of names doesn't match reproduction and survival parameters")
-  repro <- setNames(repro, names)
-  survive <- setNames(survive, names)
-  #set.Names is a convenience function that sets the names on an object and returns the object
+  if (length(name) != length(repro))
+    stop("The number of name doesn't match reproduction and survival parameters")
+  repro <- setNames(repro, name)
+  survive <- setNames(survive, name)
+  #set.Names is a convenience function that sets the name on an object and returns the object
   #set.Names() is the most useful at the end of a function definition where one is creating the object to be returned
-  return(list(repro=repro, survive=survive, comp.mat=comp.mat, names=names))
+  return(list(repro=repro, survive=survive, comp.mat=comp.mat, name=name))
 }
 
-info <- setup.plants(repro, survive, setup.plants, names)
+info <- setup.plants(repro, survive, setup.plants, name)
 print(info)
 
 
-#just testing to make sure that the added names section works out.
+#just testing to make sure that the added name section works out.
 # test.name<-c("A", "B")
 # setup.plants(repro, survive, setup.plants, test.name)
 
@@ -133,16 +133,17 @@ plant.timestep <- function(plants, info){
       return(NA)
     if (plant=='')
       return('')
-    if(runif(1) <= info$survive[plant])   #your value is greater than or equal to your survival probability then you win yay!
-      return(plant)
-    if(runif(1) >= info$survive[plant])   #if the random number is greater that our survival probablity the return a blank space
+    if(runif(1) <= info$survive[name])   #your value is greater than or equal to your survival probability then you win yay!
+      return(name)
+    if(runif(1) >= info$survive[name])   #if the random number is greater that our survival probablity the return a blank space
       return('')    #this makes sense because if it dies it's no longer there...there is nothing in this cell
   }
   #looping through the plant matrix
-  for(i in plants){
-    for(j in plants)
+  for(i in 1:nrow(plants)){
+    for(j in 1:ncol(plants)){
       new.plant.matrix <- survive(plants[i,j], info)
     return(new.plant.matrix)
+    }
   }
 }
 
