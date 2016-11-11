@@ -25,7 +25,7 @@ comp.mat[3,] <- c(.75, .25, .90)
 comp.mat
 
 #names of our plant species
-name <- c("A", "B", "C")
+name <- c("M. sativa", "L. perenne", "T. repens")
 
 
 #Here we are going to be using the Test.Terrain that I made in a seperate script (Test.Terrain.R)
@@ -109,7 +109,7 @@ plant.timestep <- function(plants, info){
   survive <- function(plant, info){
     if(is.na(plant))     #if it isnt a species I want you to return what is already in the contents of the cell
       return(NA)
-    if (plant=='')
+    if(plant=='')
       return('')
     if(runif(1) <= info$survive[name])   #your value is greater than or equal to your survival probability then you win yay!
       return(name)
@@ -173,9 +173,10 @@ run.plant.ecosystem <- function(terrain, num.timesteps, info){
   info <- info
   #Make the array
   plants <- array("", dim=c(dim(terrain), num.timesteps + 1))
-  # for(i in 1:(.5*(nrow(terrain)*ncol(terrain))))
+  # for(i in 1:(.5*(nrow(terrain)*ncol(terrain))))   #######This doesn't work
+  #below is how you RANDOMLY SEED YOUR PLANT MATRIX!!!!
   for(i in 1:(.5*nrow(terrain)^2)){
-    plants[sample(nrow(plants),1), sample(ncol(plants),1), 1] <- sample(info$name, 1) 
+    plants[sample(nrow(plants),1), sample(ncol(plants),1), 1] <- sample(info$name, 1)
   }
   for(k in seq_len(dim(plants)[3])){
     #seq_len(y) or in our case (seq_len(dim(plants)) is creating a sequence up dimensions of plants array
