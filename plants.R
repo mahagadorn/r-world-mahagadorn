@@ -117,16 +117,15 @@ plant.timestep <- function(plants, info){
       return('')    #this makes sense because if it dies it's no longer there...there is nothing in this cell
   }
   #looping through the plant matrix
-  for(i in 1:nrow(plants)){
-    print(i)
-    for(j in ncol(plants)){
-      print(j)
-      new.plant.matrix <- survive(plants[i,j], info)
-      return(new.plant.matrix)
+  for(k in 1:(nrow(plants)^2)[3]-1){
+    for(i in 1:(nrow(plants)^2)[1]){
+      for(j in 1:(nrow(plants)^2)[2]){
+      plants[i,j,k] <- survive(plants[i,j,k], info)
+      return(plants)
+      }
     }
   }
 }
-
 
 #6.2.3 run.plant.ecosystem---Here is where we actually make our plant array that we input into the previously generated functions
 #info was generated withthe setup.plants
