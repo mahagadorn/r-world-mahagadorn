@@ -117,7 +117,7 @@ plant.timestep <- function(plants, info){
       return('')    #this makes sense because if it dies it's no longer there...there is nothing in this cell
   }
   #looping through the plant matrix
-  for(k in 1:(dim(plants)[3]-1)){
+  for(k in 1:(dim(plants)[3])){
     for(i in 1:dim(plants)[1]){
       for(j in 1:dim(plants)[2]){
       plants[i,j,k] <- survive(plants[i,j,k], info)
@@ -161,14 +161,6 @@ plant.timestep(plants, info)
 #notice the timesteps+1
     #'Why did we do this this way?
     #'This is what should make it move through time???  plus one means it will add to the time step before
-    #'
-
-
-plants <- array("", dim=c(dim(Test.Terrain), 2 + 1))
-for(i in seq_len(dim(plants)[3]))
-  #seq_len(y) or in our case (seq_len(dim(plants)) is creating a sequence up dimensions of plants array
-  plants[,,i][is.na(Test.Terrain)] <- NA
-
 
 
 #Now we need to build this into a function
@@ -177,24 +169,30 @@ for(i in seq_len(dim(plants)[3]))
 #######working up until i get to looping through the plant.timestep
 
 run.plant.ecosystem <- function(terrain, num.timesteps, info){
-  terrain <- terrain
-  info <- info
   #Make the array
   plants <- array("", dim=c(dim(terrain), num.timesteps + 1))
   # for(i in 1:(.5*(nrow(terrain)*ncol(terrain))))   #######This doesn't work
   #below is how you RANDOMLY SEED YOUR PLANT MATRIX!!!!
-  for(i in 1:(.5*nrow(terrain)^2)){
+  for(k in 1:(.5*nrow(terrain)^2)){
     plants[sample(nrow(plants),1), sample(ncol(plants),1), 1] <- sample(info$name, 1)
   }
-  for(i in seq_len(dim(plants)[3])){
+  for(k in seq_len(dim(plants)[3])){
     #seq_len(y) or in our case (seq_len(dim(plants)) is creating a sequence up dimensions of plants array
-    plants[,,i][is.na(terrain)] <- NA
+    plants[,,k][is.na(terrain)] <- NA
   }
-  plants[,,i] <- plant.timestep(plants, info)
-        return(plants)
+    for(k in 1:(dim(plants)[3])){
+    plants[,,k] <- plant.timestep(plants, info)
+  }
+    return(plants)
 }
 
 run.plant.ecosystem(Test.Terrain, 3, info)
+###ERROR MESSAGE:
+# Error in plants[i, j, k] <- survive(plants[i, j, k], info) : 
+# number of items to replace is not a multiple of replacement length
+
+
+
 
 
 
