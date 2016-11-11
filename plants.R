@@ -132,20 +132,6 @@ plant.timestep <- function(plants, info){
 plant.timestep(plants, info)
 
 
-#timestep for plant
-plant.timestep <- function(eco,info){
-  for(k in 1:(dim(eco)[3]-1)){
-    for(i in 1:dim(eco)[1]){
-      for(j in 1:dim(eco)[2]){
-        eco[i,j,k+1] <- survive(eco[i,j,k], info)
-      }
-    }
-  }
-  return(eco)
-}
-
-
-
 
 
 
@@ -236,17 +222,17 @@ run.plant.ecosystem(Test.Terrain, 3, info)
 #'finally we want to return plants matrix 
 
 #reproduce function
-reproduce <- function(row, col, plants.matrix, info){
-  possible.locations <- as.matrix(expand.grid(row+c(-1,0,1), col+c(-1,0,1)))
-  #filter out NOT water logged locations and then we want to reproduce here
-  for(i in possible.locations){
-    for(j in possible.locations){
-      if(!is.na(possible.locations[i,j]))         #filtering out those that arent NA
-        if(runif(1) <= info$survive[plant]) 
-          plants[i,j] <- info$name[plant]   #I have no clue what to put in here?????
-    }      
-  }   
-}
+# reproduce <- function(row, col, plants.matrix, info){
+#   possible.locations <- as.matrix(expand.grid(row+c(-1,0,1), col+c(-1,0,1)))
+#   #filter out NOT water logged locations and then we want to reproduce here
+#   for(i in possible.locations){
+#     for(j in possible.locations){
+#       if(!is.na(possible.locations[i,j]))         #filtering out those that arent NA
+#         if(runif(1) <= info$survive[plant]) 
+#           plants[i,j] <- info$name[plant]   #I have no clue what to put in here?????
+#     }      
+#   }   
+# }
 
 #I have no clue if it is working
 
@@ -267,4 +253,4 @@ reproduce <- function(row, col, plants.matrix, info){
 
 
 
-plant <- reproduce(row, col, plants, info)
+# plant <- reproduce(row, col, plants, info)
