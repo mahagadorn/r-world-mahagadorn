@@ -58,7 +58,7 @@ setup.plants <- function(repro, survive, comp.mat, name=NULL){
   return(list(repro=repro, survive=survive, comp.mat=comp.mat, name=name))
 }
 
-info <- setup.plants(repro, survive, setup.plants, name)
+info <- setup.plants(repro, survive, comp.mat, name)
 print(info)
 
 
@@ -220,28 +220,46 @@ run.plant.ecosystem(Test.Terrain, 3, info)
 #'finally we want to return plants matrix 
 
 #reproduce function
-# reproduce <- function(row, col, plants.matrix, info){
-#   possible.locations <- as.matrix(expand.grid(row+c(-1,0,1), col+c(-1,0,1)))
-#   #filter out NOT water logged locations and then we want to reproduce here
-#   for(i in possible.locations){
-#     for(j in possible.locations){
-#       if(!is.na(possible.locations[i,j]))         #filtering out those that arent NA
-#         if(runif(1) <= info$survive[plant]) 
-#           plants[i,j] <- info$name[plant]   #I have no clue what to put in here?????
-#     }      
-#   }   
-# }
+reproduce <- function(row, col, plants, num.timesteps, info){
+  #creating possible locations based on the specific row and column location
+  possible.locations <- as.matrix(expand.grid(row+c(-1,0,1), col+c(-1,0,1)))
+  #filter out NOT water logged locations and then we want to reproduce here
+  #row and column need to be our specific positions
+  #indexes already used = i, j ,k 
+  for(l in 1:nrow(possible.locations)){       #maybe come back to this? do we want it to be #col or #rows
+    for(m in 1:ncol(possible.locations)){
+      #filtering out those that arent NA
+      if(!is.na(plants[possible.locations[l,1], possible.locations[m,1], k])){
+        if(possible.locations[row,col,k]==info$name){
+          if(runif(1) <= info$repro[plants[row,column,k]]){
+            plants[l,m] <- info$names[plants]
+            return(plants)
+          } else{
+            return(plants)
+          } 
+        }
+      }
+    }   
+  }
+}
 
-#I have no clue if it is working
+
+#Competition function
+  #What we need to keep in mind here is that we are going to want our specific plants to fight
+  #that means we will need to include a list of our species and their probability of winning a fight compared to another species
 
 
 
+fight <- function(name, info, plants){ #need to tether comp.mat in plants
+  for(i in plants){
+    for(j in plants){
+      sample(name, 1, prob=(info$comp.mat[i,j]))
+    }
+  }
+}
 
 
-
-
-
-
+###not working
 
 
 
