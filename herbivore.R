@@ -100,14 +100,3 @@ eat.fun <- function(herbivore, sated){
 
 
 
-
-
-
-
-
-
-
-
-
-
-
