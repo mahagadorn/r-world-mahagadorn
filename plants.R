@@ -1,7 +1,50 @@
+##Simulates a plant ecosystem that incorperates species, reproduction probabilities, survival probabilites, and competition probabilities.
 ##MAHagadorn
-##R-World
 ##Plants
 ##November 7, 2016
+
+#' Simulation of a plant ecosystem on a terrain matrix that was previously generated
+#' 
+#' @param species.names; character vector of length 3 that incorperates the species names plants to be used in the simulation
+#'     If no species names are specified the default will be labeled as species "a", "b", "c"
+#'        
+#' @param repro; numeric vector of length three representing probabilities of reproduction for the corresponding three species.
+#'     Reproduction probabilities should be between zero and one.
+#'     Zero represents a probability of reproduction equal to zero, or no chance of reproducing.
+#'     One represents a probability of reproduction equal to one, or 100% chance of reproduction.
+#'     In relation to \code{species.name} variable, repro vector positions 1,2, and 3 correspond to species "a", "b", and "c", respectively.
+#'     Default values are set to .5 for all species if the user does not define reproduction probabilites
+#'     
+#' @param survive; numeric vector of length three representing probabilites of survival for the corresponding three species.
+#'     See variable repro for a description of probabilities ranges.
+#'     In relation to \code{species.name} variable, survive vector positions 1,2, and 3 correspond to species "a", "b", and "c", respectively.
+#'     Default values are set to .5 for all species if the user does not define survival probabilites
+#'     
+#' @param comp.mat; 3 by 3 matrix that corresponds to individual probabilites of a species winning the competition between another species
+#'    There is no default for this input; therefore, the user must define this variable.
+#'     
+#' @param num.timesteps; numeric vector of length one.  This value indicates the number of time steps in the plant ecosystem simulation
+#'    Default value is five.
+#'    
+#' @param terrain; numeric matrix containing user defined dimensions. 
+#'     This matrix is generated in the previous step using the diamond square step algorithm
+#'     Default size of this matrix is a 9 by 9 grid.
+#'     This argument is fed multiple functions throughout the plant ecosystem simulation
+   
+
+#'Functions used in this script include      
+#'    setup.plants
+#'    survive.fun
+#'    plant.timestep
+#'    reproduce
+#'    fight
+#'    run.plant.ecosystem                                
+
+
+
+
+
+
 
 #The first thing that we need to do is write a defensive function
 #this function will check a variety of things to ensure that all the input information is right
@@ -44,7 +87,7 @@ Test.Terrain
 
 
 #here is the function that will set up our plants
-setup.plants <- function(repro, survive, comp.mat, name=NULL){
+setup.plants <- function(repro=c(.5,.5,.5), survive=c(.5,.5,.5), comp.mat, name=c("a", "b", "c")){
   if (is.null(name))
     name <- letters[seq_along(repro)]
   if (length(repro) !=length(survive))
@@ -76,7 +119,7 @@ print(info)
 
 #Survival function
 #this determines whether a particular species will survive
-survive <- function(cell, info){
+survive.fun <- function(cell, info){
   if(is.na(cell))     #if it isnt a species I want you to return what is already in the contents of the cell
     return(NA)
   if (cell=='')
@@ -106,7 +149,7 @@ survive <- function(cell, info){
 #I have no clue if this is even reasonably close to what we are supposed to be doing....AHHHHHHHH
 plant.timestep <- function(plants, info){
   #define survivor function
-  survive <- function(cell, info){
+  survive.fun <- function(cell, info){
     if(is.na(cell))     #if it isnt a species I want you to return what is already in the contents of the cell
       return(NA)
     if(cell=='')
@@ -120,7 +163,7 @@ plant.timestep <- function(plants, info){
   for(k in 1:(dim(plants)[3])){
     for(i in 1:dim(plants)[1]){
       for(j in 1:dim(plants)[2]){
-      plants[i,j,k] <- survive(plants[i,j,k], info)
+      plants[i,j,k] <- survive.fun(plants[i,j,k], info)
       print(c(i,j,k))
       }
     }
@@ -251,9 +294,11 @@ reproduce <- function(row, col, plants, num.timesteps, info){
 
 
 fight <- function(name, info, plants){ #need to tether comp.mat in plants
+  comp.mat <- info$comp.mat
+  name <- info$name
   for(i in plants){
     for(j in plants){
-      sample(name, 1, prob=(info$comp.mat[i,j]))
+      sample(name, size=1, prob=comp.mat[i,j])
     }
   }
 }
