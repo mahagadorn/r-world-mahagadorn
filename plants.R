@@ -4,41 +4,41 @@
 ##November 7, 2016
 
 #' Simulation of a plant ecosystem on a terrain matrix that was previously generated
-#' 
+#'
 #' @param species.names; character vector of length 3 that incorperates the species names plants to be used in the simulation
 #'     If no species names are specified the default will be labeled as species "a", "b", "c"
-#'        
+#'
 #' @param repro; numeric vector of length three representing probabilities of reproduction for the corresponding three species.
 #'     Reproduction probabilities should be between zero and one.
 #'     Zero represents a probability of reproduction equal to zero, or no chance of reproducing.
 #'     One represents a probability of reproduction equal to one, or 100% chance of reproduction.
 #'     In relation to \code{species.name} variable, repro vector positions 1,2, and 3 correspond to species "a", "b", and "c", respectively.
 #'     Default values are set to .5 for all species if the user does not define reproduction probabilites
-#'     
+#'
 #' @param survive; numeric vector of length three representing probabilites of survival for the corresponding three species.
 #'     See variable repro for a description of probabilities ranges.
 #'     In relation to \code{species.name} variable, survive vector positions 1,2, and 3 correspond to species "a", "b", and "c", respectively.
 #'     Default values are set to .5 for all species if the user does not define survival probabilites
-#'     
+#'
 #' @param comp.mat; 3 by 3 matrix that corresponds to individual probabilites of a species winning the competition between another species
 #'    There is no default for this input; therefore, the user must define this variable.
-#'     
+#'
 #' @param num.timesteps; numeric vector of length one.  This value indicates the number of time steps in the plant ecosystem simulation
 #'    Default value is five.
-#'    
-#' @param terrain; numeric matrix containing user defined dimensions. 
+#'
+#' @param terrain; numeric matrix containing user defined dimensions.
 #'     This matrix is generated in the previous step using the diamond square step algorithm
 #'     Default size of this matrix is a 9 by 9 grid.
 #'     This argument is fed multiple functions throughout the plant ecosystem simulation
-   
 
-#'Functions used in this script include      
+
+#'Functions used in this script include
 #'    setup.plants
 #'    survive.fun
 #'    plant.timestep
 #'    reproduce
 #'    fight
-#'    run.plant.ecosystem                                
+#'    run.plant.ecosystem
 
 
 
@@ -163,8 +163,8 @@ plant.timestep <- function(plants, info){
   for(k in 1:(dim(plants)[3])){
     for(i in 1:dim(plants)[1]){
       for(j in 1:dim(plants)[2]){
-      plants[i,j,k] <- survive.fun(plants[i,j,k], info)
-      print(c(i,j,k))
+       blah <- survive.fun(plants[i,j,k], info)
+         plants[i,j,k+1] <- blah
       }
     }
   }
@@ -191,13 +191,13 @@ plant.timestep(plants, info)
 #' information about our plants NEEDS to be stored as an array
 #' An array is like a matrix (row,col) EXCEPT we want to add in an additional depth (here it is TIME)
 #' This third demension will record how are plants are changing through time
-      #' first load of plants plants[,,1] 
-      #' second load of plants plants[,,2] 
+      #' first load of plants plants[,,1]
+      #' second load of plants plants[,,2]
           #' SEE HOW WE ARE SPECIFYING WHICH DEPTH! THIS IS HOW THEY ARE CHANGING OVER TIME: 1 INITIAL, 2 AFTER TIME INTERVAL???
 #' Something we need to do here is randomly add the number of individuals that the user wants into the matrix at RANDOM
     #'Then go in to the matrix AFTERWARDS and make NA plants that happened to land on water
     #'To do this make sure you keep track of where the water is in your matrix
-    #'This is where we want to reference our terrain to make the NA adjustments, NOT LATER! 
+    #'This is where we want to reference our terrain to make the NA adjustments, NOT LATER!
 
 
 #making the plants array
@@ -231,7 +231,7 @@ run.plant.ecosystem <- function(terrain, num.timesteps, info){
 
 run.plant.ecosystem(Test.Terrain, 3, info)
 ###ERROR MESSAGE:
-# Error in plants[i, j, k] <- survive(plants[i, j, k], info) : 
+# Error in plants[i, j, k] <- survive(plants[i, j, k], info) :
 # number of items to replace is not a multiple of replacement length
 
 
@@ -242,11 +242,11 @@ run.plant.ecosystem(Test.Terrain, 3, info)
 #REPRODUCTION
 #' our plants keep dying out....because we havent told them to reproduce yet
 #' we need them to reproduce like the would in nature (we have already included their reproduction probs in the info section)
-#' 
+#'
 #' We need to write a function that is called "reproduce"
 #' within this function we want to add a call for the plant.timestep function
-#' 
-#' first line should look something like this 
+#'
+#' first line should look something like this
       #'     plant <- reproduce(row, col, plants, info)
       #' plants is key here.  this is the matrix that we generated that includes the depth of time
       #' so the ENTIRE plant matrix has to be passed
@@ -254,13 +254,13 @@ run.plant.ecosystem(Test.Terrain, 3, info)
       #' Notice, we also have the info argument here
       #' "info" was generated in the setup.plants function
       #' this argument contains information such as probability of reproduction and survival, as well as the competition matrix (or probablity of success when faced with competition)
-      
+
 #'What do we want out of this function????
 #'we want to call the inputs described above
 #'we also want to define where they can and can't reproduce--> specifically that they can't reproduce in water
 #'we also want to flter out which ones are NOT water logged and then we want to reproduce there
 #'we need to CHECK that we actually have a place for them to reproduce to
-#'finally we want to return plants matrix 
+#'finally we want to return plants matrix
 
 #reproduce function
 reproduce <- function(row, col, plants, num.timesteps, info){
@@ -268,7 +268,7 @@ reproduce <- function(row, col, plants, num.timesteps, info){
   possible.locations <- as.matrix(expand.grid(row+c(-1,0,1), col+c(-1,0,1)))
   #filter out NOT water logged locations and then we want to reproduce here
   #row and column need to be our specific positions
-  #indexes already used = i, j ,k 
+  #indexes already used = i, j ,k
   for(l in 1:nrow(possible.locations)){       #maybe come back to this? do we want it to be #col or #rows
     for(m in 1:ncol(possible.locations)){
       #filtering out those that arent NA
@@ -279,10 +279,10 @@ reproduce <- function(row, col, plants, num.timesteps, info){
             return(plants)
           } else{
             return(plants)
-          } 
+          }
         }
       }
-    }   
+    }
   }
 }
 
@@ -298,7 +298,7 @@ fight <- function(name, info, plants){ #need to tether comp.mat in plants
   name <- info$name
   for(i in plants){
     for(j in plants){
-      sample(name, size=1, prob=comp.mat[i,j])
+      sample(name, size=1, prob=info$comp.mat[i,j])
     }
   }
 }
