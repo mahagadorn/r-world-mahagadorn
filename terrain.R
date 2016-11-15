@@ -18,9 +18,6 @@
 #matrix size
 # mat.size <- ((2^n)+1); will yield a matrix that will always have a center point/midpoints that can be calculated
 general.matrix <- function(n, mean){
-  if(is.null(n)){
-    n <- 3
-  }
   mat.size <- ((2^n)+1)
   g.mat <- matrix(NA, nrow = mat.size, ncol = mat.size)
   # here we are adding values to the corners
@@ -41,14 +38,12 @@ diamond.step <- function(g.mat){
   return(g.mat)
 }
 
-ds <- diamond.step(g.mat)
-
 
 
 # Square step matrix
 # This calculates the square step aspect of the terrain matrix
 # first we create vecotrs which concatenate the values that need to be input for calculating the means
-square.step <- function(g.mat){
+square.step <- function(g.mat, mean){
   #need to make the left middle point
   corner.vec <- c(g.mat[1,1], g.mat[1, ncol(g.mat)],  g.mat[1, ncol(g.mat)], g.mat[nrow(g.mat), nrow(g.mat)])    #give me the values of the corners
   g.mat[ceiling(.5*(nrow(g.mat))), ceiling(.5*(ncol(g.mat)))] <- mean(corner.vec)
@@ -57,10 +52,10 @@ square.step <- function(g.mat){
   right.mid <- c(g.mat[ceiling(.5*(nrow(g.mat))), ceiling(.5*(ncol(g.mat)))], g.mat[1, ncol(g.mat)], g.mat[nrow(g.mat), ncol(g.mat)])
   b.mid <- c(g.mat[ceiling(.5*(nrow(g.mat))), ceiling(.5*(ncol(g.mat)))], g.mat[1,1], g.mat[nrow(g.mat), ncol(g.mat)])
   #assigning means to spot in matrix; the rnorm() adds a decreased level of noise in this step
-  g.mat[ceiling(.5*(nrow(g.mat))), 1] <- mean(left.mid) + rnorm(1, mean, (mean/2))
-  g.mat[1, ceiling(.5*(ncol(g.mat)))] <- mean(top.mid) + rnorm(1, mean, (mean/2))
-  g.mat[ceiling(.5*(nrow(g.mat))), nrow(g.mat)] <- mean(right.mid) + rnorm(1, mean, (mean/2))
-  g.mat[nrow(g.mat), ceiling(.5*(ncol(g.mat)))] <- mean(b.mid) + rnorm(1, mean, (mean/2))
+  g.mat[ceiling(.5*(nrow(g.mat))), 1] <- mean(left.mid) + rnorm(1, mean, sd=(mean/2))
+  g.mat[1, ceiling(.5*(ncol(g.mat)))] <- mean(top.mid) + rnorm(1, mean, sd=(mean/2))
+  g.mat[ceiling(.5*(nrow(g.mat))), nrow(g.mat)] <- mean(right.mid) + rnorm(1, mean, sd=(mean/2))
+  g.mat[nrow(g.mat), ceiling(.5*(ncol(g.mat)))] <- mean(b.mid) + rnorm(1, mean, sd=(mean/2))
   return(g.mat)
 }
 
@@ -115,9 +110,9 @@ make.terrain <- function(n=5, mean=500, lake.na=TRUE){
   return(terrain)
 }
 
-x <- make.terrain(n=3, mean=100, lake.na = TRUE)
-y <- make.terrain(lake.na = FALSE)
-z <- make.terrain(2, 10)
+# x <- make.terrain(n=3, mean=100, lake.na = TRUE)
+# y <- make.terrain(lake.na = FALSE)
+# z <- make.terrain(2, 10)
 
 
 
