@@ -71,21 +71,6 @@ comp.mat
 name <- c("M. sativa", "L. perenne", "T. repens")
 
 
-#Here we are going to be using the Test.Terrain that I made in a seperate script (Test.Terrain.R)
-#This will ensure that our functions are working properly
-Test.Terrain
-# [,1]  [,2]  [,3]   [,4]   [,5]
-# [1,]  0.520 0.374 0.951  0.955  1.526
-# [2,]  4.056 4.908 3.293  2.732  4.758
-# [3,] -0.187 3.506    NA  2.269  2.224
-# [4,]  1.011 0.761    NA  0.816  1.141
-# [5,] -0.545 0.523 1.368 -0.343 -0.012
-
-#####   ATTENTION: MAH REMOVE THIS BIT OF INFO WHEN YOU ARE CLEANING THINGS UP!!!!!!
-
-
-
-
 #here is the function that will set up our plants
 setup.plants <- function(repro=c(.5,.5,.5), survive=c(.5,.5,.5), comp.mat, name=c("a", "b", "c")){
   if (is.null(name))
@@ -160,11 +145,13 @@ plant.timestep <- function(plants, info){
       return('')    #this makes sense because if it dies it's no longer there...there is nothing in this cell
   }
   #looping through the plant matrix
-  for(k in 1:(dim(plants)[3])){
+  for(k in 1:(dim(plants)[3]-1)){
     for(i in 1:dim(plants)[1]){
       for(j in 1:dim(plants)[2]){
-       blah <- survive.fun(plants[i,j,k], info)
-         plants[i,j,k+1] <- blah
+       temp.plants <- array(NA, dim = dim(plants))
+       temp.plants <- survive.fun(plants[i,j,k], info)
+         plants[i,j,k] <- temp.plants
+         print(i,j,k+1)
       }
     }
   }
@@ -229,7 +216,7 @@ run.plant.ecosystem <- function(terrain, num.timesteps, info){
     return(plants)
 }
 
-run.plant.ecosystem(Test.Terrain, 3, info)
+run.plant.ecosystem(terrain, 3, info)
 ###ERROR MESSAGE:
 # Error in plants[i, j, k] <- survive(plants[i, j, k], info) :
 # number of items to replace is not a multiple of replacement length

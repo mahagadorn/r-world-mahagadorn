@@ -15,22 +15,49 @@
         #This is the only function that is exported!!!
 
 
-general.matrix <- function(n, x.bar){
+
+#' Make starting terrain matrix with the corners seeded
+#'
+#' Function to make the initial terrain matrix with seeded corners. Ultimately, this matrix will be input into both the \code{diamond.step} and \code{square.step} functions.
+#' @param n Size of the grid will be a (2^n)+1 (by default: n=5; a 33 by 33 grid)
+#' @param x.bar Numeric vector (Default: 500) that will be input as the mean into the rnorm() function.
+#'    Here, x.bar will be used to add random noise to our terrain matrix through standard deviations from the x.bar value.
+#'    This is applied to rnorm() as sd=(x.bar*x.bar), so one half the x.bar will be the standard deviation used.
+#' @return general matrix called g.mat
+#' @examples
+#' test.g.mat <- general.matrix()
+#' test.g.mat2 <- general.matrix(2,10)
+
+
+general.matrix <- function(n=5, x.bar=500){
   mat.size <- ((2^n)+1)
   g.mat <- matrix(NA, nrow = mat.size, ncol = mat.size)
   # here we are adding values to the corners
   # rnorm() adds a large amount of noise/variation to numeric outputs
-  g.mat[1,1] <- rnorm(1, x.bar, (x.bar+x.bar))
-  g.mat[nrow(g.mat), 1] <- rnorm(1, x.bar, (x.bar+x.bar))
-  g.mat[1, ncol(g.mat)] <- rnorm(1, x.bar, (x.bar+x.bar))
-  g.mat[nrow(g.mat), nrow(g.mat)] <- rnorm(1, x.bar, (x.bar+x.bar))
+  g.mat[1,1] <- rnorm(1, x.bar, (x.bar*x.bar))
+  g.mat[nrow(g.mat), 1] <- rnorm(1, x.bar, (x.bar*x.bar))
+  g.mat[1, ncol(g.mat)] <- rnorm(1, x.bar, (x.bar*x.bar))
+  g.mat[nrow(g.mat), nrow(g.mat)] <- rnorm(1, x.bar, (x.bar*x.bar))
   return(g.mat)
 }
+
+# test.g.mat <- general.matrix()
+# test.g.mat2 <- general.matrix(2,10)
+
+
+
+
+
+#' Apply diamond step algorithm to a general matrix
+#'
+#' Adding values to a general matrix (g.mat) in a diamond algorithm fashion
+#' @param g.mat General matrix generate using the \code{general.matrix} function (Default: g.mat).
+#' @return a general matrix (g.mat)
 
 
 # Diamond step matrix
 # Takes mean of the randomly generated corner values to make the the center point
-diamond.step <- function(g.mat){
+diamond.step <- function(g.mat=g.mat){
   corner.vec <- c(g.mat[1,1], g.mat[1, ncol(g.mat)],  g.mat[1, ncol(g.mat)], g.mat[nrow(g.mat), nrow(g.mat)])    #give me the values of the corners
   g.mat[ceiling(.5*(nrow(g.mat))), ceiling(.5*(ncol(g.mat)))] <- mean(corner.vec)     #taking the mean of the corner and placing it in the center of the matrix
   return(g.mat)
@@ -38,10 +65,21 @@ diamond.step <- function(g.mat){
 
 
 
+
+#' Apply square step algorithm to a general matrix
+#'
+#' Adding values to a general matrix (g.mat) in a square algorithm fashion
+#' @param g.mat General matrix generate using the \code{general.matrix} function (Default: g.mat).
+#' @param x.bar Numeric vector (Default: 500) that will be input as the mean into the rnorm() function.
+#'    Here, x.bar will be used to add random noise to our terrain matrix through standard deviations from the x.bar value.
+#'    This is applied to rnorm() as sd=(x.bar/2), so one half the x.bar will be the standard deviation used.
+#' @return a general matrix (g.mat)
+
+
 # Square step matrix
 # This calculates the square step aspect of the terrain matrix
 # first we create vecotrs which concatenate the values that need to be input for calculating the means
-square.step <- function(g.mat, x.bar){
+square.step <- function(g.mat=g.mat, x.bar=500){
   #need to make the left middle point
   corner.vec <- c(g.mat[1,1], g.mat[1, ncol(g.mat)],  g.mat[1, ncol(g.mat)], g.mat[nrow(g.mat), nrow(g.mat)])    #give me the values of the corners
   g.mat[ceiling(.5*(nrow(g.mat))), ceiling(.5*(ncol(g.mat)))] <- mean(corner.vec)
@@ -58,11 +96,19 @@ square.step <- function(g.mat, x.bar){
 }
 
 
+#' Apply the diamond and square step algorithms to a general matrix
+#'
+#' Adding values to a general matrix (g.mat) sequentially based on the \code{diamond.step} and \code{square.step} algorithms
+#' @param g.mat General matrix generate using the \code{general.matrix} function (Default: g.mat).
+#' @param n Size of the grid will be a (2^n)+1 (by default: n=5; a 33 by 33 grid)
+#' @param x.bar Numeric vector (Default: 500) that will be input as the mean into the rnorm() function.
+#'    This value is used to add random noise to the matrix values when functions \code{general.matrix} and \code{square.step} are called.
+#' @return a general matrix (g.mat)
 
 
 #Writing a diamond step function that does both the functions above and fills in all values of our matrix
 #This is flexible enough to do large and small n values
-diamond.square.step<- function(g.mat, x.bar, n){
+diamond.square.step<- function(g.mat=g.mat, n=5, x.bar=500){
   x.bar <- x.bar
   n <- n
   for(i in 2^(n:1)){
@@ -75,7 +121,6 @@ diamond.square.step<- function(g.mat, x.bar, n){
   }
   return(g.mat)
 }
-
 
 #' Make a terrain matrix of numeric values using the Diamond-Square Step Algorithm
 #'
@@ -99,7 +144,7 @@ make.terrain <- function(n=5, x.bar=500, lake.na=TRUE){
   x.bar <- x.bar
   mat.size <- ((2^n)+1)
   g.mat <- general.matrix(n, x.bar)
-  terrain <- diamond.square.step(g.mat, x.bar, n)
+  terrain <- diamond.square.step(g.mat, n, x.bar)
   #now we want to make the option to make anything less than zero NA or (H20)
   if(lake.na==TRUE){
     terrain[terrain < 0] <- NA
@@ -108,10 +153,7 @@ make.terrain <- function(n=5, x.bar=500, lake.na=TRUE){
   return(terrain)
 }
 
-# x <- make.terrain(n=3, mean=100, lake.na = TRUE)
-# y <- make.terrain(lake.na = FALSE)
-# z <- make.terrain(2, 10)
-
+terrain <- make.terrain(3, 100, lake.na = TRUE)
 
 
 
