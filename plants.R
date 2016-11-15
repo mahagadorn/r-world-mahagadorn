@@ -62,8 +62,8 @@ survive <- c(.75, .50)
 
 #here is our competition matrix
 comp.mat <- matrix(NA, nrow = length(repro), ncol=length(repro))
-comp.mat[1,] <- c(1, .50, .25)
-comp.mat[2,] <- c(.25, .35, .85)
+comp.mat[1,] <- c(1, .50)
+comp.mat[2,] <- c(.25, .35)
 comp.mat
 
 #names of our plant species
@@ -130,12 +130,22 @@ survive.fun <- function(cell, info){
 
 #plant.timestep function
 plant.timestep <- function(plants, info){
+  survive.fun <- function(cell, info){
+    if(is.na(cell))
+      return(NA)
+    if(cell=='')
+      return('')
+    if(runif(1) <= info$survive[cell])
+      return(cell)
+    if(runif(1) >= info$survive[cell])
+      return('')   #this makes sense because if it dies it's no longer there...there is nothing in this cell
+  }
   #looping through the plant matrix
   for(k in 1:(dim(plants)[3]-1)){
     for(i in 1:(dim(plants)[1])){
       for(j in 1:(dim(plants)[2])){
-         plants[i,j, (k+1)] <- survive.fun(plants[,,k], info)
-         print(i,j,k)
+        plants[i,j,k+1] <- survive.fun(plants[,,k], info)
+        print(c(i,j,k))
       }
     }
   }
@@ -195,10 +205,8 @@ run.plant.ecosystem <- function(terrain, num.timesteps, info){
   for(k in seq_len(dim(plants)[3])){
     #seq_len(y) or in our case (seq_len(dim(plants)) is creating a sequence up dimensions of plants array
     plants[,,k][is.na(terrain)] <- NA
-  }
-  for(k in 1:num.timesteps){
+    }
   plants <- plant.timestep(plants, info)
-  }
   return(plants)
 }
 
