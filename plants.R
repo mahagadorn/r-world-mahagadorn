@@ -107,11 +107,11 @@ print(info)
 survive.fun <- function(cell, info){
   if(is.na(cell))     #if it isnt a species I want you to return what is already in the contents of the cell
     return(NA)
-  if (cell=='')
+  if(cell=='')
     return('')
-  if(runif(1) <= info$survive[plant])   #your value is greater than or equal to your survival probability then you win yay!
+  if(runif(1) <= info$survive[cell])   #your value is greater than or equal to your survival probability then you win yay!
     return(cell)
-  if(runif(1) >= info$survive[plant])   #if the random number is greater that our survival probablity the return a blank space
+  if(runif(1) >= info$survive[cell])   #if the random number is greater that our survival probablity the return a blank space
     return('')    #this makes sense because if it dies it's no longer there...there is nothing in this cell
 }
 
@@ -130,28 +130,13 @@ survive.fun <- function(cell, info){
 
 
 #plant.timestep function
-
-#I have no clue if this is even reasonably close to what we are supposed to be doing....AHHHHHHHH
 plant.timestep <- function(plants, info){
-  #define survivor function
-  survive.fun <- function(cell, info){
-    if(is.na(cell))     #if it isnt a species I want you to return what is already in the contents of the cell
-      return(NA)
-    if(cell=='')
-      return('')
-    if(runif(1) <= info$survive[cell])   #your value is greater than or equal to your survival probability then you win yay!
-      return(cell)
-    if(runif(1) >= info$survive[cell])   #if the random number is greater that our survival probablity the return a blank space
-      return('')    #this makes sense because if it dies it's no longer there...there is nothing in this cell
-  }
   #looping through the plant matrix
   for(k in 1:(dim(plants)[3]-1)){
-    for(i in 1:dim(plants)[1]){
-      for(j in 1:dim(plants)[2]){
-       temp.plants <- array(NA, dim = dim(plants))
-       temp.plants <- survive.fun(plants[i,j,k], info)
-         plants[i,j,k] <- temp.plants
-         print(i,j,k+1)
+    for(i in 1:(dim(plants)[1])){
+      for(j in 1:(dim(plants)[2])){
+         plants[i,j, (k+1)] <- survive.fun(plants[,,k], info)
+         print(i,j,k)
       }
     }
   }
@@ -161,7 +146,9 @@ plant.timestep <- function(plants, info){
 
 plant.timestep(plants, info)
 
-
+###ERROR MESSAGE:
+# Error in plants[i, j, k] <- survive(plants[i, j, k], info) :
+# number of items to replace is not a multiple of replacement length
 
 
 
@@ -203,20 +190,22 @@ run.plant.ecosystem <- function(terrain, num.timesteps, info){
   plants <- array("", dim=c(dim(terrain), num.timesteps + 1))
   # for(i in 1:(.5*(nrow(terrain)*ncol(terrain))))   #######This doesn't work
   #below is how you RANDOMLY SEED YOUR PLANT MATRIX!!!!
-  for(k in 1:(.5*nrow(terrain)^2)){
+  for(k in 1:(length(terrain))){
     plants[sample(nrow(plants),1), sample(ncol(plants),1), 1] <- sample(info$name, 1)
   }
   for(k in seq_len(dim(plants)[3])){
     #seq_len(y) or in our case (seq_len(dim(plants)) is creating a sequence up dimensions of plants array
     plants[,,k][is.na(terrain)] <- NA
   }
-    for(k in 1:(dim(plants)[3])){
-    plants[,,k] <- plant.timestep(plants, info)
+  for(k in 1:num.timesteps){
+  plants <- plant.timestep(plants, info)
   }
-    return(plants)
+  return(plants)
 }
 
 run.plant.ecosystem(terrain, 3, info)
+
+
 ###ERROR MESSAGE:
 # Error in plants[i, j, k] <- survive(plants[i, j, k], info) :
 # number of items to replace is not a multiple of replacement length
