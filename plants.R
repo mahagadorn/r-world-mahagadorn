@@ -55,20 +55,19 @@
 #reproduction probability vector
 
 #probability of reproduction for 3 different species
-repro <- c(.50, 1, .75)
+repro <- c(.50, 1)
 
 #survival vector containing probability of survival for 3 different species
-survive <- c(.75, .50, .50)
+survive <- c(.75, .50)
 
 #here is our competition matrix
 comp.mat <- matrix(NA, nrow = length(repro), ncol=length(repro))
 comp.mat[1,] <- c(1, .50, .25)
 comp.mat[2,] <- c(.25, .35, .85)
-comp.mat[3,] <- c(.75, .25, .90)
 comp.mat
 
 #names of our plant species
-name <- c("M. sativa", "L. perenne", "T. repens")
+name <- c("M. sativa", "L. perenne")
 
 
 #here is the function that will set up our plants
