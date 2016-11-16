@@ -69,9 +69,24 @@ comp.mat
 #names of our plant species
 name <- c("M. sativa", "L. perenne")
 
+#' Step up a list of plant information
+#'
+#'
+#' @param repro Numeric vector of length two representing probabilities of reproduction for the corresponding species (Default: 0.5).
+#'    Reproduction probabilities should be between zero and one.
+#'    Zero represents a probability of reproduction equal to zero, or no chance of reproducing.
+#'    One represents a probability of reproduction equal to one, or 100% chance of reproduction.
+#'    In relation to \code{name}, repro vector positions 1 and 2 correspond to species "a" and "b", respectively.
+#' @param survive Numeric vector of length two representing probabilites of survival for the corresponding species (Default: 0.5).
+#'    See variable repro for a description of probability ranges.
+#'    In relation to \code{name}, survive vector positions 1 and 2 correspond to species "a" and "b", respectively.
+#' @param comp.mat 2 by 2 matrix that corresponds to individual probabilites of a species winning the competition between another species
+#'    There is no default for this input; therefore, the user must define this variable.
+#' @param name Character vector of length two that incorperates the two plant species names to be used in the simulation (Default: "a", "b")
+#' @return list of elements corresponding to argument inputs
 
 #here is the function that will set up our plants
-setup.plants <- function(repro=c(.5,.5,.5), survive=c(.5,.5,.5), comp.mat, name=c("a", "b", "c")){
+setup.plants <- function(repro=c(.5,.5), survive=c(.5,.5), comp.mat, name=c("a", "b")){
   if (is.null(name))
     name <- letters[seq_along(repro)]
   if (length(repro) !=length(survive))
@@ -89,29 +104,27 @@ info <- setup.plants(repro, survive, comp.mat, name)
 print(info)
 
 
-#just testing to make sure that the added names section works out.
-# test.name<-c("A", "B")
-# setup.plants(repro, survive, setup.plants, test.name)
+# #Survival function
+# #this determines whether a particular species will survive
+# survive.fun <- function(cell, info){
+#   if(is.na(cell))     #if it isnt a species I want you to return what is already in the contents of the cell
+#     return(NA)
+#   if(cell=='')
+#     return('')
+#   if(runif(1) <= info$survive[cell])   #your value is greater than or equal to your survival probability then you win yay!
+#     return(cell)
+#   if(runif(1) >= info$survive[cell])   #if the random number is greater that our survival probablity the return a blank space
+#     return('')    #this makes sense because if it dies it's no longer there...there is nothing in this cell
+# }
 
-#First Steps: storing plants and keeping them alive!!
 
-
-
-
-
-
-
-#Survival function
-#this determines whether a particular species will survive
 survive.fun <- function(cell, info){
-  if(is.na(cell))     #if it isnt a species I want you to return what is already in the contents of the cell
+  if(is.na(cell))
     return(NA)
   if(cell=='')
     return('')
-  if(runif(1) <= info$survive[cell])   #your value is greater than or equal to your survival probability then you win yay!
-    return(cell)
-  if(runif(1) >= info$survive[cell])   #if the random number is greater that our survival probablity the return a blank space
-    return('')    #this makes sense because if it dies it's no longer there...there is nothing in this cell
+  if(runif(1) >= info$survive[cell])
+    return('')   #this makes sense because if it dies it's no longer there...there is nothing in this cell
 }
 
 
@@ -127,25 +140,22 @@ survive.fun <- function(cell, info){
 #what we want is a loop for the plant matrix and then a loop for the survivor matrix
 
 
+#' Simulate plant ecosystem for distinct points in time
+#'
+#' Function that incorperates intervals of time and for our entire plant matrix
+#' @param plants An array of plant matrice with time as the depth dimension.
+#'     Array generated using the \code{run.plant.ecosystem}
+#' @param info A list including reproduction, survival, and competition probabilities, as well as, species names.
+#'    This list is generated using the \code{setup.plants} function.
+#' @return an array called "plants"
 
 #plant.timestep function
-plant.timestep <- function(plants, info){
-  survive.fun <- function(cell, info){
-    if(is.na(cell))
-      return(NA)
-    if(cell=='')
-      return('')
-    if(runif(1) <= info$survive[cell])
-      return(cell)
-    if(runif(1) >= info$survive[cell])
-      return('')   #this makes sense because if it dies it's no longer there...there is nothing in this cell
-  }
+plant.timestep <- function(plants=plants, info=info){
   #looping through the plant matrix
   for(k in 1:(dim(plants)[3]-1)){
     for(i in 1:(dim(plants)[1])){
       for(j in 1:(dim(plants)[2])){
-        plants[i,j,k+1] <- survive.fun(plants[,,k], info)
-        print(c(i,j,k))
+        plants[i,j,(k+1)] <- survive.fun(plants[i,j,k], info)
       }
     }
   }
@@ -193,6 +203,17 @@ plant.timestep(plants, info)
 #This will be the run.plant.ecosystem
 
 #######working up until i get to looping through the plant.timestep
+
+#' Simulation of plant ecosystem through time
+#'
+#' MAH ADD INFO HERE
+#' @param terrain Numeric matrix generated using \code{make.terrain}
+#' @param num.timesteps Numeric value indicating the number of times steps that should be looped over
+#' @param info A list including reproduction, survival, and competition probabilities, as well as, species names.
+#'    This list is generated using the \code{setup.plants} function.
+#' @return a plant array
+#' @export
+
 
 run.plant.ecosystem <- function(terrain, num.timesteps, info){
   #Make the array
