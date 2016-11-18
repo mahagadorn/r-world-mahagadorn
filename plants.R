@@ -119,11 +119,14 @@ print(info)
 
 
 survive.fun <- function(cell, info){
+  random <- runif(1)
   if(is.na(cell))
     return(NA)
   if(cell=='')
     return('')
-  if(runif(1) >= info$survive[cell])
+  if(random <= info$survive[cell])   #your value is greater than or equal to your survival probability then you win yay!
+    return(cell)
+  if(random >= info$survive[cell])
     return('')   #this makes sense because if it dies it's no longer there...there is nothing in this cell
 }
 
@@ -168,6 +171,10 @@ plant.timestep(plants, info)
 ###ERROR MESSAGE:
 # Error in plants[i, j, k] <- survive(plants[i, j, k], info) :
 # number of items to replace is not a multiple of replacement length
+# Was receiving this error because I made a simple mistake.  I fed two numbers generated from a random uniform dist (runif) in my survive function
+# This mean was trying to feed in more numbers then it was supposed to...hense the replace is not a multiple of replacement length
+# This was fixed by saving a single number generated with runif() [called random in survive function] and feeding that into the steps of the function.
+# Got assistance on this from W. Pearse.
 
 
 
