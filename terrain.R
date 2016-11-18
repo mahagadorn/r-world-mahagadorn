@@ -7,12 +7,12 @@
 # Make a terrain matrix of numeric values using the Diamond-Square Step Algorithm
 #
 # Functions used in this script include
-    # general.matrix; makes initial matrix
-    # diamond.step; creates diamond step function
-    # square.step; creates square step function
-    # diamond.square.step; combines diamond and square step functions
-    # make.terrain; wrapper function that includes diamond.square.step function and lakes.na (argument)
-        #This is the only function that is exported!!!
+# general.matrix; makes initial matrix
+# diamond.step; creates diamond step function
+# square.step; creates square step function
+# diamond.square.step; combines diamond and square step functions
+# make.terrain; wrapper function that includes diamond.square.step function and lakes.na (argument)
+#This is the only function that is exported!!!
 
 
 
@@ -23,10 +23,8 @@
 #' @param x.bar Numeric vector (Default: 500) that will be input as the mean into the rnorm() function.
 #'    Here, x.bar will be used to add random noise to our terrain matrix through standard deviations from the x.bar value.
 #'    This is applied to rnorm() as sd=(x.bar*x.bar), so one half the x.bar will be the standard deviation used.
+#' @author Mallory Hagadorn
 #' @return general matrix called g.mat
-#' @examples
-#' test.g.mat <- general.matrix()
-#' test.g.mat2 <- general.matrix(2,10)
 
 
 general.matrix <- function(n=5, x.bar=500){
@@ -34,24 +32,23 @@ general.matrix <- function(n=5, x.bar=500){
   g.mat <- matrix(NA, nrow = mat.size, ncol = mat.size)
   # here we are adding values to the corners
   # rnorm() adds a large amount of noise/variation to numeric outputs
-  g.mat[1,1] <- rnorm(1, x.bar, (x.bar*x.bar))
-  g.mat[nrow(g.mat), 1] <- rnorm(1, x.bar, (x.bar*x.bar))
-  g.mat[1, ncol(g.mat)] <- rnorm(1, x.bar, (x.bar*x.bar))
-  g.mat[nrow(g.mat), nrow(g.mat)] <- rnorm(1, x.bar, (x.bar*x.bar))
+  g.mat[1,1] <- rnorm(1, x.bar, (x.bar*10))
+  g.mat[nrow(g.mat), 1] <- rnorm(1, x.bar, (x.bar*10))
+  g.mat[1, ncol(g.mat)] <- rnorm(1, x.bar, (x.bar*10))
+  g.mat[nrow(g.mat), nrow(g.mat)] <- rnorm(1, x.bar, (x.bar*10))
   return(g.mat)
 }
-
-# test.g.mat <- general.matrix()
-# test.g.mat2 <- general.matrix(2,10)
-
+#MAH NOTE
 
 
 
 
 #' Apply diamond step algorithm to a general matrix
+
 #'
 #' Adding values to a general matrix (g.mat) in a diamond algorithm fashion
 #' @param g.mat General matrix generate using the \code{general.matrix} function (Default: g.mat).
+#' @author Mallory Hagadorn
 #' @return a general matrix (g.mat)
 
 
@@ -73,6 +70,7 @@ diamond.step <- function(g.mat=g.mat){
 #' @param x.bar Numeric vector (Default: 500) that will be input as the mean into the rnorm() function.
 #'    Here, x.bar will be used to add random noise to our terrain matrix through standard deviations from the x.bar value.
 #'    This is applied to rnorm() as sd=(x.bar/2), so one half the x.bar will be the standard deviation used.
+#' @author Mallory Hagadorn
 #' @return a general matrix (g.mat)
 
 
@@ -103,6 +101,7 @@ square.step <- function(g.mat=g.mat, x.bar=500){
 #' @param n Size of the grid will be a (2^n)+1 (by default: n=5; a 33 by 33 grid)
 #' @param x.bar Numeric vector (Default: 500) that will be input as the mean into the rnorm() function.
 #'    This value is used to add random noise to the matrix values when functions \code{general.matrix} and \code{square.step} are called.
+#' @author Mallory Hagadorn
 #' @return a general matrix (g.mat)
 
 
@@ -112,10 +111,31 @@ diamond.square.step<- function(g.mat=g.mat, n=5, x.bar=500){
   x.bar <- x.bar
   n <- n
   for(i in 2^(n:1)){
-    for(j in seq(1, ncol(g.mat)-1, by=i)){
-      for(k in seq(1, nrow(g.mat)-1, by=i)){
+    #Will, I hope this is detailed enough to explain to you that I understand what is happening, I'm not the best at explaining in words.
+    #If not by all means ask me.
+    #Got inspiration from Bodie's work:
+    #The above line is how we are able to make the subsets within our matrices
+    #MAH Example for understanding, so if my default n is used (which is 5) we get this:
+    # > 2^(5:1)
+    # [1] 32 16  8  4  2
+    #Therefore, we are getting a subet of all of our "midpoints" persay
+    #This is what Will was trying to get you to see earlier...This will mean that your functions will loop over those matrice subsets.
+    for(j in seq(1, (ncol(g.mat)-1), by=i)){
+      #means: for (j) or our column index we want to take the j-th value that is in a sequence from 1 to the number of columns in our matrix (minus one)
+      #we subtract one from this to keep it within the bounds "Without error message is  Error in g.mat[k:(k + i), j:(j + i)] : subscript out of bounds"
+      #This error means that that index (here j) is out of the given bounds aka the specified size of our matrix
+      #By making it ncol(g.mat)-1), so the number of actually columns in our matrix MINUS one means that we keep our script in bounds(or the given matrix size) and R is happy!
+      #the by=i argument specifies that we want to sequence generated to be in increments that are equivalent to our matrix subsets.
+      #by doing this in j we are saying to use this sequence for all of our indexed rows.
+      for(k in seq(1, (nrow(g.mat)-1), by=i)){
+        #See description above, except this is for our rows not our columns
         g.mat[k:(k+i),j:(j+i)] <- diamond.step(g.mat[k:(k+i),j:(j+i)])
+        #Here we are just applying our previously defined diamond.step function to our row and column subsets.
+        #This will loop through all our our large quadrants and then loop through our smaller quadrants.
+        #NOTE MAH: it's important to remember that these loops are nested within each other
+        #This starts with the first for loop [for(i in 2^(n:1))] where we make our initial subsets.
         g.mat[k:(k+i),j:(j+i)] <- square.step(g.mat[k:(k+i),j:(j+i)], x.bar)
+        #same as above just applying out square.step function
       }
     }
   }
@@ -130,30 +150,32 @@ diamond.square.step<- function(g.mat=g.mat, n=5, x.bar=500){
 #'    Standard deviations used in the rnorm() function are generated from the mean value.
 #'    The first standard deviation value (calculated as mean * mean) will be used in \code{general.matrix} to generate  the random corner values from a normal distribution.
 #'    The second standard deviation value (calculated as mean/2) will be used in \code{square.step} for generating noise at the finer spatial scales.
-#' @param lake.na Logical (Default: TRUE) that specifies whether to make all terrain values lower than zero height underwater.
+#' @param water Logical (Default: TRUE) that specifies whether to make all terrain values lower than zero height underwater.
 #' @return a terrain matrix; numeric elements that are indicates as heights and if lake.na=TRUE \code{NA}s indicated cells that are waterlogged. Terrain matrix is visualized using \code{image}.
+#' @author Mallory Hagadorn
 #' @examples
-#' x <- make.terrain(n=3, mean=100, lake.na = TRUE)
-#' y <- make.terrain(lake.na = FALSE)
+#' terrain <- make.terrain(3, 100, water = TRUE)
+#'    #Returned is a matrix (and image) using 3 as the size indicator, 100 as the mean, and saying that any value less than or equal to 0 should be made an NA.
+#' y <- make.terrain(water = FALSE)
+#'    #Returned is a matrix (and image) which using the default n and x.bar values, but that specifies values less than or equal to 0 shouldn't be replaced with NA's
+#'    #This gives the user some flexibility to not force them to use NA's
 #' z <- make.terrain(2, 10)
+#'    #Returned is a matrix (and image) where the n(2) and x.bar(10) are much smaller, but NA's still replace the values less than or equal to 0
 #' @export
 
 
-make.terrain <- function(n=5, x.bar=500, lake.na=TRUE){
+make.terrain <- function(n=5, x.bar=500, water=TRUE){
   n <- n
   x.bar <- x.bar
   mat.size <- ((2^n)+1)
   g.mat <- general.matrix(n, x.bar)
   terrain <- diamond.square.step(g.mat, n, x.bar)
   #now we want to make the option to make anything less than zero NA or (H20)
-  if(lake.na==TRUE){
-    terrain[terrain < 0] <- NA
+  if(water==TRUE){
+    terrain[terrain <= 0] <- NA
   }
   image(terrain, col = terrain.colors(20))
   return(terrain)
 }
-
-terrain <- make.terrain(3, 100, lake.na = TRUE)
-
 
 
